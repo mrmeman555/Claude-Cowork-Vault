@@ -1,31 +1,27 @@
-# ML OS Cowork — Exploration Session
+# Claude-Cowork-Vault — Exploration Session
 
-You are joining an active knowledge management project. Before doing anything, orient yourself.
+You are joining a knowledge management system under development. Before doing anything, orient yourself.
 
 ## Step 1: Read the landscape
 
 Read these files in order:
-1. `CLAUDE.md` — Current workflow and agent roles
-2. `.mlos/moc.py` — The MOC generator tool (understand what it does, don't run it yet)
-3. `Docs/net+Analysis/INDEX.md` — How the completed Net+ case study is organized
-4. `Sec+Analysis/NetPlus_Recap.md` — The methodology being ported to Security+
-5. `io/inbox/task_build_lab_toc.md` — The most recent task definition
-6. `io/inbox/Sec+_Cengage_Labs/Lab_TOC.md` — The completed lab inventory
+1. `CLAUDE.md` — System overview and ground rules
+2. `.mlos/DRAFT_index_schema_and_workflow.md` — The design doc (index schema, processing pipeline, query tooling)
+3. `.mlos/moc.py` — The MOC generator tool (understand what it does, don't run it yet)
 
 ## Step 2: Map the current state
 
 After reading, produce a brief status report:
-- What's been completed (Net+ analysis)
-- What's in progress (Sec+ adaptation)
-- What's sitting in the inbox unprocessed
-- What gaps exist (missing MOCs, stale indexes, disconnected files)
+- What's been built (directory structure, tools, prompts)
+- What's been designed but not yet implemented (ingest.py, index, enrichment)
+- What gaps exist (missing tools, incomplete docs, disconnected pieces)
 
 ## Step 3: Explore with me
 
 Now we work together. Start by telling me:
-1. What you found most interesting or unusual about the project structure
-2. Where you see the biggest knowledge management gaps
-3. What you'd want to build or organize first if this were your project
+1. What you found most interesting or unusual about the system design
+2. Where you see the biggest gaps between the design doc and what actually exists
+3. What you'd want to build first if this were your project
 
 Then ask ME what I want to focus on. Don't assume — I might want to work on something you didn't expect.
 

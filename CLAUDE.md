@@ -4,24 +4,36 @@
 - **URL:** https://github.com/mrmeman555/Claude-Cowork-Vault.git
 - **Branch:** main
 
+## What this is
+
+A knowledge management system under development. This repo contains the **architecture, tooling, and prompts** — not the data itself. Study materials and analysis outputs live elsewhere; this repo is cloned and populated when deployed.
+
 ## Structure
 
 ```
-vault/          ← Stored, processed materials (organized by project)
-bench/          ← Work product / analysis that references vault items
-io/inbox/       ← Raw drop zone for new materials
-.mlos/          ← System tools, index, prompts, memory
+vault/{project}/    Stored, processed materials (organized by project)
+bench/{project}/    Work product that references vault items — MOCs, filters, maps
+io/inbox/           Raw drop zone for new materials
+.mlos/              System layer — index, tools, prompts, memory
 ```
 
-- `vault/{project}/` stores files. They go in, they don't change.
-- `bench/{project}/` is where you build things from vault materials — MOCs, filters, maps.
-- `io/inbox/` is the drop zone. Files leave when they're processed into vault.
+- `vault/` and `bench/` mirror each other by project name.
+- `io/inbox/` is the ingest point. Files leave when processed into vault.
 - `.mlos/index.json` is the metadata index (source of truth for what's in the vault).
+- `.mlos/prompts/` contains agent prompts for onboarding and exploration.
+- `.mlos/moc.py` generates Maps of Content from directory scans.
 
 ## Index Schema (minimal, auto-derived)
 
 Each vault item gets: `id`, `filename`, `type`, `size`, `title`, `ingested`, `project`.
 Richer metadata (tags, objectives, descriptions) added later in batches as needed.
+Paths are NOT stored — derived from `vault/{project}/{filename}`.
+
+## What needs to be built
+
+- `ingest.py` — scan inbox, move to vault, auto-populate index
+- Index enrichment workflow — batch-add metadata fields
+- Query/export tooling — filtered views, rendered INDEX.md
 
 ## Workflow
 1. `git pull` before doing anything
@@ -29,8 +41,8 @@ Richer metadata (tags, objectives, descriptions) added later in batches as neede
 3. Push when done
 
 ## Who works here
-- **Cloud agent (claude.ai / Cowork):** Writes docs, plans changes, commits to repo
-- **Local agent (Claude Code):** Pulls repo, executes on the actual machines
+- **Cloud agent (claude.ai / Cowork):** Writes docs, plans changes, designs systems
+- **Local agent (Claude Code):** Pulls repo, executes, builds tools, processes files
 - **Operator (Mimir):** Relays between agents, final authority
 
 ## Ground rules
