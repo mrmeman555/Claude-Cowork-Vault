@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML OS — Vault Browser</title>
+<style>
+/* ── Reset & Base ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-primary: #0a0e17;
+  --bg-secondary: #111827;
+  --bg-card: #1a2236;
+  --bg-hover: #1e2d4a;
+  --bg-active: #243352;
+  --border: #1e2d4a;
+  --border-light: #2a3a5c;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim: #64748b;
+  --green: #22c55e;
+  --green-dim: #16a34a;
+  --cyan: #06b6d4;
+  --cyan-dim: #0891b2;
+  --yellow: #eab308;
+  --magenta: #c084fc;
+  --red: #ef4444;
+  --orange: #f97316;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.6;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Layout ────────────────────────────────────────────── */
+.app {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  grid-template-rows: 48px 1fr 32px;
+  height: 100vh;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--cyan), var(--green));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--bg-primary);
+}
+
+.header-title {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+  margin-right: 6px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ── Sidebar ───────────────────────────────────────────── */
+.sidebar {
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 16px 0;
+}
+
+.sidebar-section {
+  margin-bottom: 20px;
+}
+
+.sidebar-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  padding: 0 16px;
+  margin-bottom: 8px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.sidebar-item.active {
+  background: var(--bg-active);
+  color: var(--cyan);
+  border-left-color: var(--cyan);
+}
+
+.sidebar-icon {
+  font-size: 14px;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sidebar-name {
+  font-size: 13px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  background: var(--bg-primary);
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+/* ── Main Content ──────────────────────────────────────── */
+.main {
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* ── Overview Panel ────────────────────────────────────── */
+.overview-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.card-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.card-value {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.card-value.green { color: var(--green); }
+.card-value.cyan { color: var(--cyan); }
+.card-value.yellow { color: var(--yellow); }
+.card-value.magenta { color: var(--magenta); }
+
+/* ── File Table ────────────────────────────────────────── */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.panel-title {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.panel-subtitle {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.file-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.file-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.file-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.file-table tr {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.file-table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.file-table tbody tr.active {
+  background: var(--bg-active);
+}
+
+.file-id {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.file-name {
+  font-family: var(--font-mono);
+  color: var(--cyan);
+}
+
+.file-type {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+.type-badge.markdown { color: var(--cyan); border: 1px solid var(--cyan-dim); }
+.type-badge.python { color: var(--yellow); border: 1px solid var(--yellow); }
+.type-badge.json { color: var(--orange); border: 1px solid var(--orange); }
+.type-badge.yaml { color: var(--magenta); border: 1px solid var(--magenta); }
+.type-badge.pdf { color: var(--red); border: 1px solid var(--red); }
+.type-badge.docx, .type-badge.doc { color: var(--green); border: 1px solid var(--green-dim); }
+
+/* Task status badges */
+.status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-family: var(--font-mono); background: var(--bg-primary); }
+.status-badge.open { color: var(--yellow); border: 1px solid var(--yellow); }
+.status-badge.in_progress { color: var(--cyan); border: 1px solid var(--cyan-dim); }
+.status-badge.done { color: var(--green); border: 1px solid var(--green-dim); }
+.status-badge.dropped { color: var(--text-dim); border: 1px solid var(--text-dim); }
+
+.task-filters { margin-bottom: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.task-filters select {
+  background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border);
+  padding: 6px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px;
+  cursor: pointer;
+}
+.task-filters select:hover { border-color: var(--border-light); }
+.task-filters select:focus { outline: none; border-color: var(--cyan-dim); }
+
+.priority-high { color: var(--red); }
+.priority-medium { color: var(--yellow); }
+.priority-low { color: var(--text-dim); }
+
+.file-size {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.file-source {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.source-agent {
+  color: var(--magenta);
+}
+
+.source-inbox {
+  color: var(--green);
+}
+
+/* ── File Viewer ───────────────────────────────────────── */
+.viewer {
+  display: none;
+}
+
+.viewer.active {
+  display: block;
+}
+
+.viewer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px 8px 0 0;
+  padding: 12px 16px;
+}
+
+.viewer-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.viewer-back {
+  background: none;
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.viewer-back:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.viewer-filename {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--cyan);
+}
+
+.viewer-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.viewer-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 20px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: var(--text-secondary);
+}
+
+.viewer-content .md-h1 { color: var(--green); font-size: 18px; font-weight: 700; margin: 16px 0 8px; }
+.viewer-content .md-h2 { color: var(--cyan); font-size: 15px; font-weight: 600; margin: 14px 0 6px; }
+.viewer-content .md-h3 { color: var(--yellow); font-size: 14px; font-weight: 600; margin: 12px 0 4px; }
+.viewer-content .md-hr { border: none; border-top: 1px solid var(--border-light); margin: 12px 0; }
+.viewer-content .md-quote { border-left: 3px solid var(--cyan-dim); padding-left: 12px; color: var(--text-dim); }
+.viewer-content .md-code { background: var(--bg-primary); padding: 12px; border-radius: 4px; border: 1px solid var(--border); display: block; margin: 8px 0; overflow-x: auto; }
+.viewer-content .md-bold { color: var(--text-primary); font-weight: 600; }
+.viewer-content .md-li { padding-left: 8px; }
+.viewer-content .md-li::before { content: ""; }
+.viewer-content .md-table-row { display: flex; border-bottom: 1px solid var(--border); }
+.viewer-content .md-table-cell { padding: 4px 12px; flex: 1; }
+.viewer-content .md-table-header { color: var(--text-dim); font-size: 11px; text-transform: uppercase; }
+.viewer-content .md-link { color: var(--cyan); text-decoration: underline; }
+
+/* ── Status Bar ────────────────────────────────────────── */
+.statusbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* ── Empty State ───────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.empty-state-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="header-logo">V</div>
+      <span class="header-title">ML OS — Vault Browser</span>
+    </div>
+    <div class="header-status">
+      <span><span class="status-dot"></span>INDEX LIVE</span>
+      <span id="header-item-count">—</span>
+      <span id="header-updated">—</span>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navigation</div>
+      <div class="sidebar-item active" data-view="overview">
+        <span class="sidebar-icon">◎</span>
+        <span class="sidebar-name">Overview</span>
+      </div>
+      <div class="sidebar-item" data-view="tasks">
+        <span class="sidebar-icon">☐</span>
+        <span class="sidebar-name">Tasks</span>
+        <span class="sidebar-count" id="sidebar-task-count"></span>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Projects</div>
+      <div id="sidebar-projects"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">System</div>
+      <div class="sidebar-item" data-view="index-raw">
+        <span class="sidebar-icon">{ }</span>
+        <span class="sidebar-name">Raw Index</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main" id="main"></main>
+
+  <!-- Status Bar -->
+  <footer class="statusbar">
+    <span id="status-left">vault/</span>
+    <span id="status-right">ML OS v1.0</span>
+  </footer>
+</div>
+
+<script>
+// ── State ───────────────────────────────────────────────
+let state = {
+  index: null,
+  tree: null,
+  projects: null,
+  tasksData: null,
+  currentView: 'overview',
+  currentProject: null,
+  viewingFile: null,
+};
+
+// ── API ─────────────────────────────────────────────────
+async function api(endpoint) {
+  const res = await fetch(`/api/${endpoint}`);
+  return res.json();
+}
+
+async function loadData() {
+  const [index, projects, tree, tasks] = await Promise.all([
+    api('index'),
+    api('projects'),
+    api('tree'),
+    api('tasks'),
+  ]);
+  state.index = index;
+  state.projects = projects;
+  state.tree = tree;
+  state.tasksData = tasks;
+  updateHeader();
+  renderSidebar();
+  renderView();
+  // Update sidebar task count
+  const openTasks = (tasks || []).filter(t => t.status !== 'done' && t.status !== 'dropped').length;
+  const el = document.getElementById('sidebar-task-count');
+  if (el) el.textContent = openTasks || '';
+}
+
+// ── Header ──────────────────────────────────────────────
+function updateHeader() {
+  const count = state.index?.items?.length || 0;
+  document.getElementById('header-item-count').textContent = `${count} ITEMS`;
+  const updated = state.index?.last_updated;
+  if (updated) {
+    const d = new Date(updated);
+    document.getElementById('header-updated').textContent = `UPDATED ${d.toLocaleDateString()}`;
+  }
+}
+
+// ── Sidebar ─────────────────────────────────────────────
+function renderSidebar() {
+  const container = document.getElementById('sidebar-projects');
+  container.innerHTML = '';
+  for (const p of state.projects) {
+    const div = document.createElement('div');
+    div.className = 'sidebar-item';
+    div.dataset.view = 'project';
+    div.dataset.project = p.name;
+    div.innerHTML = `
+      <span class="sidebar-icon">◆</span>
+      <span class="sidebar-name">${p.name}</span>
+      <span class="sidebar-count">${p.count}</span>
+    `;
+    div.addEventListener('click', () => navigateTo('project', p.name));
+    container.appendChild(div);
+  }
+}
+
+// ── Navigation ──────────────────────────────────────────
+function navigateTo(view, project = null) {
+  state.currentView = view;
+  state.currentProject = project;
+  state.viewingFile = null;
+
+  // Update sidebar active state
+  document.querySelectorAll('.sidebar-item').forEach(el => {
+    el.classList.remove('active');
+    if (view === 'project' && el.dataset.project === project) el.classList.add('active');
+    if (view === el.dataset.view && !project) el.classList.add('active');
+  });
+
+  // Update status bar
+  if (view === 'project') {
+    document.getElementById('status-left').textContent = `vault/${project}/`;
+  } else {
+    document.getElementById('status-left').textContent = `vault/`;
+  }
+
+  renderView();
+}
+
+// ── Render Router ───────────────────────────────────────
+function renderView() {
+  const main = document.getElementById('main');
+  switch (state.currentView) {
+    case 'overview': renderOverview(main); break;
+    case 'project': renderProject(main); break;
+    case 'tasks': renderTasks(main); break;
+    case 'index-raw': renderRawIndex(main); break;
+  }
+}
+
+// ── Overview ────────────────────────────────────────────
+function renderOverview(main) {
+  const items = state.index?.items || [];
+  const projects = state.projects || [];
+  const totalSize = items.reduce((s, i) => s + (i.size || 0), 0);
+  const types = [...new Set(items.map(i => i.type))];
+  const agentCount = items.filter(i => i.source === 'agent').length;
+
+  main.innerHTML = `
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">System Overview</div>
+        <div class="panel-subtitle">Vault runtime status</div>
+      </div>
+    </div>
+    <div class="overview-cards">
+      <div class="card">
+        <div class="card-label">Total Items</div>
+        <div class="card-value green">${items.length}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Projects</div>
+        <div class="card-value cyan">${projects.length}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Total Size</div>
+        <div class="card-value yellow">${humanSize(totalSize)}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Agent-Created</div>
+        <div class="card-value magenta">${agentCount}</div>
+      </div>
+    </div>
+    <div class="panel-header">
+      <div class="panel-title">All Files</div>
+    </div>
+    ${items.length ? renderFileTable(items) : '<div class="empty-state"><div class="empty-state-icon">◇</div><div class="empty-state-text">Vault is empty.<br>Use ingest.py to add files.</div></div>'}
+  `;
+  bindTableClicks(main);
+}
+
+// ── Project View ────────────────────────────────────────
+function renderProject(main) {
+  const project = state.currentProject;
+  const items = (state.index?.items || []).filter(i => i.project === project);
+  const treeFiles = state.tree?.[project] || [];
+  const totalSize = items.reduce((s, i) => s + (i.size || 0), 0);
+
+  main.innerHTML = `
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">${project}/</div>
+        <div class="panel-subtitle">${items.length} indexed items · ${humanSize(totalSize)}</div>
+      </div>
+    </div>
+    <div id="project-table">
+      ${items.length ? renderFileTable(items) : '<div class="empty-state"><div class="empty-state-icon">◇</div><div class="empty-state-text">No indexed files in this project.<br>Drop files in io/inbox/ and run ingest.</div></div>'}
+    </div>
+    <div id="project-viewer" class="viewer"></div>
+  `;
+  bindTableClicks(main);
+}
+
+// ── File Table ──────────────────────────────────────────
+function renderFileTable(items) {
+  const rows = items.map(i => {
+    const displayName = i.subpath ? `${i.subpath}/${i.filename}` : i.filename;
+    const source = i.source === 'agent' ? '<span class="source-agent">agent</span>' : '<span class="source-inbox">inbox</span>';
+    return `
+      <tr data-project="${i.project}" data-filename="${i.filename}" data-subpath="${i.subpath || ''}">
+        <td class="file-id">${i.id || '—'}</td>
+        <td class="file-name">${displayName}</td>
+        <td><span class="type-badge ${i.type}">${i.type}</span></td>
+        <td class="file-size">${humanSize(i.size)}</td>
+        <td class="file-source">${source}</td>
+        <td class="file-size">${i.ingested || '—'}</td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+    <table class="file-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Filename</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Source</th>
+          <th>Ingested</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function bindTableClicks(container) {
+  container.querySelectorAll('.file-table tbody tr').forEach(row => {
+    row.addEventListener('click', () => {
+      const { project, filename, subpath } = row.dataset;
+      openFile(project, filename, subpath || null);
+    });
+  });
+}
+
+// ── File Viewer ─────────────────────────────────────────
+async function openFile(project, filename, subpath) {
+  const params = new URLSearchParams({ project, filename });
+  if (subpath) params.set('subpath', subpath);
+  const data = await fetch(`/api/file?${params}`).then(r => r.json());
+  if (data.error) return;
+
+  state.viewingFile = data;
+
+  const item = (state.index?.items || []).find(
+    i => i.project === project && i.filename === filename
+  );
+
+  const main = document.getElementById('main');
+
+  // Build viewer HTML
+  const displayName = subpath ? `${subpath}/${filename}` : filename;
+  const meta = item ? `${item.id} · ${item.type} · ${humanSize(item.size)} · ${item.source || 'inbox'}` : '';
+
+  const viewerHTML = `
+    <div class="viewer-bar">
+      <div class="viewer-bar-left">
+        <button class="viewer-back" id="viewer-back-btn">← Back</button>
+        <span class="viewer-filename">${displayName}</span>
+      </div>
+      <span class="viewer-meta">${meta}</span>
+    </div>
+    <div class="viewer-content">${renderMarkdown(data.content)}</div>
+  `;
+
+  // If in project view, show inline
+  const projectViewer = document.getElementById('project-viewer');
+  const projectTable = document.getElementById('project-table');
+  if (projectViewer && projectTable) {
+    projectTable.style.display = 'none';
+    projectViewer.className = 'viewer active';
+    projectViewer.innerHTML = viewerHTML;
+  } else {
+    // Overview — replace main
+    main.innerHTML = viewerHTML;
+  }
+
+  document.getElementById('viewer-back-btn').addEventListener('click', () => {
+    if (projectViewer) {
+      projectTable.style.display = '';
+      projectViewer.className = 'viewer';
+      projectViewer.innerHTML = '';
+    } else {
+      renderView();
+    }
+  });
+
+  document.getElementById('status-left').textContent = `vault/${project}/${displayName}`;
+}
+
+// ── Simple Markdown Renderer ────────────────────────────
+function renderMarkdown(text) {
+  if (!text) return '';
+  const lines = text.split('\n');
+  let html = '';
+  let inCode = false;
+  let codeBlock = '';
+
+  for (const line of lines) {
+    // Code blocks
+    if (line.trim().startsWith('```')) {
+      if (inCode) {
+        html += `<div class="md-code">${escapeHtml(codeBlock)}</div>`;
+        codeBlock = '';
+        inCode = false;
+      } else {
+        inCode = true;
+      }
+      continue;
+    }
+    if (inCode) {
+      codeBlock += line + '\n';
+      continue;
+    }
+
+    // Headings
+    if (line.startsWith('### ')) { html += `<div class="md-h3">${escapeHtml(line.slice(4))}</div>\n`; continue; }
+    if (line.startsWith('## ')) { html += `<div class="md-h2">${escapeHtml(line.slice(3))}</div>\n`; continue; }
+    if (line.startsWith('# ')) { html += `<div class="md-h1">${escapeHtml(line.slice(2))}</div>\n`; continue; }
+
+    // HR
+    if (line.trim() === '---' || line.trim() === '***') { html += `<hr class="md-hr">\n`; continue; }
+
+    // Blockquote
+    if (line.startsWith('> ')) { html += `<div class="md-quote">${formatInline(line.slice(2))}</div>\n`; continue; }
+
+    // List items
+    if (line.match(/^\s*[-*]\s/)) { html += `<div class="md-li">${formatInline(line)}</div>\n`; continue; }
+
+    // Table rows (basic)
+    if (line.includes('|') && line.trim().startsWith('|')) {
+      if (line.replace(/[|\-\s]/g, '') === '') continue; // separator row
+      const cells = line.split('|').filter(c => c.trim());
+      const isHeader = lines[lines.indexOf(line) + 1]?.replace(/[|\-\s:]/g, '') === '';
+      const cls = isHeader ? 'md-table-header' : '';
+      html += `<div class="md-table-row">${cells.map(c => `<span class="md-table-cell ${cls}">${formatInline(c.trim())}</span>`).join('')}</div>\n`;
+      continue;
+    }
+
+    // Empty line
+    if (line.trim() === '') { html += '\n'; continue; }
+
+    // Normal text
+    html += formatInline(line) + '\n';
+  }
+
+  if (inCode && codeBlock) {
+    html += `<div class="md-code">${escapeHtml(codeBlock)}</div>`;
+  }
+
+  return html;
+}
+
+function formatInline(text) {
+  let s = escapeHtml(text);
+  s = s.replace(/\*\*(.+?)\*\*/g, '<span class="md-bold">$1</span>');
+  s = s.replace(/`(.+?)`/g, '<code style="background:var(--bg-primary);padding:1px 4px;border-radius:3px;">$1</code>');
+  return s;
+}
+
+function escapeHtml(text) {
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+// ── Raw Index View ──────────────────────────────────────
+function renderRawIndex(main) {
+  const raw = JSON.stringify(state.index, null, 2);
+  main.innerHTML = `
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Raw Index</div>
+        <div class="panel-subtitle">.mlos/index.json</div>
+      </div>
+    </div>
+    <div class="viewer-content" style="border-radius:8px;border:1px solid var(--border);">
+      <div class="md-code">${escapeHtml(raw)}</div>
+    </div>
+  `;
+}
+
+// ── Tasks View ──────────────────────────────────────────
+function renderTasks(main) {
+  const tasks = state.tasksData || [];
+  const openCount = tasks.filter(t => t.status === 'open').length;
+  const inProgressCount = tasks.filter(t => t.status === 'in_progress').length;
+  const doneCount = tasks.filter(t => t.status === 'done').length;
+  const projects = [...new Set(tasks.map(t => t.project))].sort();
+  const types = [...new Set(tasks.map(t => t.type))].sort();
+
+  main.innerHTML = `
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Tasks</div>
+        <div class="panel-subtitle">${tasks.length} total across ${projects.length} project(s)</div>
+      </div>
+    </div>
+    <div class="overview-cards">
+      <div class="card"><div class="card-label">Open</div><div class="card-value" style="color:var(--yellow)">${openCount}</div></div>
+      <div class="card"><div class="card-label">In Progress</div><div class="card-value" style="color:var(--cyan)">${inProgressCount}</div></div>
+      <div class="card"><div class="card-label">Done</div><div class="card-value" style="color:var(--green)">${doneCount}</div></div>
+    </div>
+    <div class="task-filters">
+      <select id="filter-status">
+        <option value="">All Status</option>
+        <option value="open">Open</option>
+        <option value="in_progress">In Progress</option>
+        <option value="done">Done</option>
+        <option value="dropped">Dropped</option>
+      </select>
+      <select id="filter-project">
+        <option value="">All Projects</option>
+        ${projects.map(p => `<option value="${p}">${p}</option>`).join('')}
+      </select>
+      <select id="filter-type">
+        <option value="">All Types</option>
+        ${types.map(t => `<option value="${t}">${t}</option>`).join('')}
+      </select>
+    </div>
+    <div id="task-table-container">
+      ${renderTaskTable(tasks)}
+    </div>
+  `;
+
+  // Bind filter handlers
+  ['filter-status', 'filter-project', 'filter-type'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => {
+      const sv = document.getElementById('filter-status').value;
+      const pv = document.getElementById('filter-project').value;
+      const tv = document.getElementById('filter-type').value;
+      let filtered = state.tasksData || [];
+      if (sv) filtered = filtered.filter(t => t.status === sv);
+      if (pv) filtered = filtered.filter(t => t.project === pv);
+      if (tv) filtered = filtered.filter(t => t.type === tv);
+      document.getElementById('task-table-container').innerHTML = renderTaskTable(filtered);
+    });
+  });
+}
+
+function renderTaskTable(tasks) {
+  if (!tasks.length) {
+    return '<div class="empty-state"><div class="empty-state-icon">☐</div><div class="empty-state-text">No tasks found.</div></div>';
+  }
+  const rows = tasks.map(t => {
+    const priClass = t.priority === 'high' ? 'priority-high' : t.priority === 'low' ? 'priority-low' : 'priority-medium';
+    return `<tr>
+      <td class="file-id">${t.id}</td>
+      <td class="file-name">${t.title}</td>
+      <td><span class="status-badge ${t.status}">${t.status.replace('_', ' ')}</span></td>
+      <td class="${priClass}" style="font-family:var(--font-mono);font-size:12px;">${t.priority}</td>
+      <td><span class="type-badge">${t.type}</span></td>
+      <td class="file-id">${t.project}</td>
+      <td class="file-size">${(t.tags || []).join(', ')}</td>
+    </tr>`;
+  }).join('');
+
+  return `<table class="file-table">
+    <thead><tr>
+      <th>ID</th><th>Title</th><th>Status</th><th>Priority</th><th>Type</th><th>Project</th><th>Tags</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// ── Utilities ───────────────────────────────────────────
+function humanSize(bytes) {
+  if (!bytes || bytes === 0) return '0 B';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+// ── Sidebar click handlers ──────────────────────────────
+document.querySelectorAll('.sidebar-item[data-view="overview"]').forEach(el => {
+  el.addEventListener('click', () => navigateTo('overview'));
+});
+document.querySelectorAll('.sidebar-item[data-view="tasks"]').forEach(el => {
+  el.addEventListener('click', () => navigateTo('tasks'));
+});
+document.querySelectorAll('.sidebar-item[data-view="index-raw"]').forEach(el => {
+  el.addEventListener('click', () => navigateTo('index-raw'));
+});
+
+// ── Init ────────────────────────────────────────────────
+loadData();
+</script>
+
+</body>
+</html>

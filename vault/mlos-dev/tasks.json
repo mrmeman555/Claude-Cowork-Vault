@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-03-06T00:07:59+00:00",
+  "tasks": [
+    {
+      "id": "t-cbeff8",
+      "title": "Address context-rotting static files",
+      "status": "in_progress",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-06T00:05:22+00:00",
+      "updated": "2026-03-06T00:07:56+00:00",
+      "tags": [
+        "context-rot",
+        "vault-system"
+      ],
+      "notes": "decisions.md, session-history.md, pickup.md rot between sessions — replace with maintainable alternatives"
+    },
+    {
+      "id": "t-8bb55a",
+      "title": "Evaluate OpenClaw for Tier 2 watcher agents",
+      "status": "open",
+      "priority": "medium",
+      "type": "idea",
+      "created": "2026-03-06T00:07:59+00:00",
+      "updated": "2026-03-06T00:07:59+00:00",
+      "tags": [
+        "watcher",
+        "automation"
+      ],
+      "notes": "Persistent intelligent agents for session-history and decisions updates"
+    }
+  ]
+}

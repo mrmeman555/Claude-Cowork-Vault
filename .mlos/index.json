@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-03-06T00:08:25+00:00",
+  "items": [
+    {
+      "id": "c6a74b6e",
+      "filename": "project-state.md",
+      "type": "markdown",
+      "size": 3894,
+      "title": "ML OS Project State",
+      "ingested": "2026-03-05",
+      "project": "mlos-dev",
+      "source": "agent"
+    },
+    {
+      "id": "93c646e7",
+      "filename": "decisions.md",
+      "type": "markdown",
+      "size": 3855,
+      "title": "Architectural Decisions Log",
+      "ingested": "2026-03-05",
+      "project": "mlos-dev",
+      "source": "agent"
+    },
+    {
+      "id": "4162431a",
+      "filename": "session-history.md",
+      "type": "markdown",
+      "size": 2495,
+      "title": "Session History",
+      "ingested": "2026-03-05",
+      "project": "mlos-dev",
+      "source": "agent"
+    },
+    {
+      "id": "9e9f7297",
+      "filename": "pickup.md",
+      "type": "markdown",
+      "size": 1459,
+      "title": "ML OS Dev Pickup Prompt",
+      "ingested": "2026-03-05",
+      "project": "mlos-dev",
+      "source": "agent"
+    },
+    {
+      "id": "c9917938",
+      "filename": "usecase-watcher-agents.md",
+      "type": "markdown",
+      "size": 9368,
+      "title": "Use Case: Intelligent Watcher Agents for Context Maintenance",
+      "ingested": "2026-03-05",
+      "project": "mlos-dev",
+      "source": "agent"
+    },
+    {
+      "id": "8615b53a",
+      "filename": "test-events.md",
+      "type": "markdown",
+      "size": 33,
+      "title": "Event Log Test",
+      "ingested": "2026-03-05",
+      "project": "mlos-dev",
+      "source": "agent"
+    }
+  ]
+}
