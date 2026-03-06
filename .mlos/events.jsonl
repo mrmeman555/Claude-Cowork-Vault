@@ -6,3 +6,10 @@
 {"timestamp": "2026-03-06T00:07:56+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-cbeff8", "changes": "status=in_progress"}
 {"timestamp": "2026-03-06T00:07:59+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-8bb55a", "title": "Evaluate OpenClaw for Tier 2 watcher agents", "type": "idea"}
 {"timestamp": "2026-03-06T00:08:25+00:00", "action": "sync", "target": "project-state.md", "size": 3894, "index_items": 6, "vault_projects": 3}
+{"timestamp": "2026-03-06T00:40:44+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-13274f", "title": "Explore .claude directory for vault integration", "type": "task"}
+{"timestamp": "2026-03-06T00:40:46+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-4637b2", "title": "Research MCP servers for vault system", "type": "idea"}
+{"timestamp": "2026-03-06T00:40:48+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-f79cdc", "title": "Research sub-agents for vault automation", "type": "idea"}
+{"timestamp": "2026-03-06T00:42:25+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-b7e972", "title": "Track chat sessions per project (transcript linkage)", "type": "task"}
+{"timestamp": "2026-03-06T00:43:46+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-fa0b53", "title": "Add provenance tracking to tasks (transcript + message linkage)", "type": "task"}
+{"timestamp": "2026-03-06T01:00:13+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-2508bc", "title": "Transform ML OS demo into agent-facing context pack builder", "type": "task"}
+{"timestamp": "2026-03-06T01:04:26+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-2508bc", "changes": "notes updated"}
