@@ -45,6 +45,22 @@ Paths are NOT stored — derived from `vault/{project}/{filename}`.
 - **Local agent (Claude Code):** Pulls repo, executes, builds tools, processes files
 - **Operator (Mimir):** Relays between agents, final authority
 
+## Linked Workspaces
+
+This workspace is part of a multi-repo system. You have full file access to all of these — use absolute paths.
+
+| Workspace | Path | What Lives There |
+|-----------|------|-----------------|
+| **Home_Lab_2026** (This Repo) | `C:\Users\Erinh\Desktop\Home_Lab_2026` | Vault infrastructure — `ingest.py` CLI pipeline, `server.py` API (port 3001), vault browser UI, per-project `tasks.json` tracking |
+| **OpenClaw_Claude** (Shared Workspace) | `C:\Users\Erinh\Desktop\OpenClaw_Claude` | Engines, research, OpenClaw/NanoClaw architecture, operator profile (`mimir.md`), reflexivity system, Flow Mode. Git repo: `OpenClaw_Claude` |
+| **ClaudeTest** (ML OS Demo) | `C:\Users\Erinh\Desktop\ClaudeTest` | ML OS visualization — boot sequence, dashboard, agent instantiation UI. Dev server on port 3000 |
+
+### Key cross-repo files
+- **OpenClaw pickup:** `C:\Users\Erinh\Desktop\OpenClaw_Claude\projects\openclaw\pickup.md`
+- **Operator profile:** `C:\Users\Erinh\Desktop\OpenClaw_Claude\.context\mimir.md`
+- **Engine prompts:** `C:\Users\Erinh\Desktop\OpenClaw_Claude\.context\engines\`
+- **ML OS demo:** `C:\Users\Erinh\Desktop\ClaudeTest\index.html` (port 3000)
+
 ## Ground rules
 - Do NOT modify vault files without asking the operator first
 - Do NOT run scripts without showing what they'll do
