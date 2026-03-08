@@ -51,6 +51,27 @@ echo -e "${AMBER}${BOLD}║         ML OS — SESSION CLOSE             ║${RES
 echo -e "${AMBER}${BOLD}╚══════════════════════════════════════════╝${RESET}"
 echo ""
 
+# ─── STEP 0: SYNC TRANSCRIPTS TO SHARED DRIVE ───────────────────────────────
+echo -e "${CYAN}Syncing transcripts to shared drive...${RESET}"
+TRANSCRIPT_DST="$MLOS_ROOT/transcripts"
+if [ -d "$TRANSCRIPT_DST" ]; then
+  # Detect device and sync
+  if [ -d "$HOME/.claude/projects" ]; then
+    # Determine device name from hostname
+    DEVICE_NAME="device-$(hostname | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"
+    mkdir -p "$TRANSCRIPT_DST/$DEVICE_NAME"
+    rsync -av --ignore-existing "$HOME/.claude/projects/" "$TRANSCRIPT_DST/$DEVICE_NAME/" \
+        --include="*/" \
+        --include="*.jsonl" \
+        --exclude="*" \
+        2>/dev/null
+    echo -e "${GREEN}✓ Transcripts synced to $TRANSCRIPT_DST/$DEVICE_NAME${RESET}"
+  fi
+else
+  echo -e "${DIM}Transcript directory not found — skipping sync${RESET}"
+fi
+echo ""
+
 # ─── STEP 1: DETECT CURRENT BRANCH ──────────────────────────────────────────
 cd "$OPENCLAW_DIR"
 BRANCH=$(git branch --show-current 2>/dev/null)

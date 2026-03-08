@@ -7,6 +7,7 @@ extracting structured signals without any LLM dependency.
 
 Usage:
   python .mlos/watcher.py parse <transcript.jsonl>   Parse a transcript into the DB
+  python .mlos/watcher.py parse-all                   Parse all transcripts from shared drive
   python .mlos/watcher.py sessions                    List all parsed sessions
   python .mlos/watcher.py activity [--project X] [--type Y] [-n N]  Query activity timeline
   python .mlos/watcher.py files [--project X]         List files by project
@@ -59,6 +60,33 @@ def _build_project_roots():
     return roots
 
 PROJECT_ROOTS = _build_project_roots()
+
+
+def _get_transcript_dirs():
+    """Return shared drive transcript directories for all devices."""
+    # Prefer env var (allows per-device override), then .env file
+    mlos_root = os.environ.get("MLOS_ROOT", "")
+    if not mlos_root:
+        env = _load_env()
+        mlos_root = env.get("MLOS_ROOT", "")
+    if not mlos_root:
+        return []
+    # Try the path as-is first, then try repo-relative parent (shared drive)
+    candidates = [
+        Path(mlos_root.replace("\\", "/")) / "transcripts",
+        ROOT.parent / "transcripts",  # repo is at {MLOS_ROOT}/Home_Lab_2026
+    ]
+    for base in candidates:
+        if base.exists():
+            dirs = []
+            for device_dir in sorted(base.iterdir()):
+                if device_dir.is_dir():
+                    dirs.append(device_dir)
+            if dirs:
+                return dirs
+    return []
+
+TRANSCRIPT_DIRS = _get_transcript_dirs()
 
 
 def classify_project(path: str) -> str | None:
@@ -624,6 +652,35 @@ def cmd_parse(args):
     conn.close()
 
 
+def cmd_parse_all(args):
+    """Parse all .jsonl transcripts from shared drive transcript directories."""
+    conn = init_db(_get_db_path())
+    dirs = TRANSCRIPT_DIRS
+    if not dirs:
+        print("No transcript directories found. Check MLOS_ROOT in .env.")
+        sys.exit(1)
+
+    total_parsed = 0
+    total_skipped = 0
+    for device_dir in dirs:
+        device_name = device_dir.name
+        jsonl_files = list(device_dir.rglob("*.jsonl"))
+        if not jsonl_files:
+            print(f"  {device_name}: no .jsonl files found")
+            continue
+        print(f"  {device_name}: {len(jsonl_files)} transcript(s)")
+        for jf in jsonl_files:
+            stats = parse_transcript(str(jf), conn)
+            if stats["messages"] > 0:
+                total_parsed += 1
+                print(f"    + {jf.name}: {stats['messages']} msgs, {stats['tool_uses']} tools")
+            else:
+                total_skipped += 1
+
+    print(f"\nDone: {total_parsed} parsed, {total_skipped} skipped (already in DB)")
+    conn.close()
+
+
 def cmd_sessions(args):
     conn = init_db(_get_db_path())
     rows = conn.execute(
@@ -864,6 +921,7 @@ def cmd_git_ops(args):
 
 COMMANDS = {
     "parse": cmd_parse,
+    "parse-all": cmd_parse_all,
     "sessions": cmd_sessions,
     "activity": cmd_activity,
     "files": cmd_files,

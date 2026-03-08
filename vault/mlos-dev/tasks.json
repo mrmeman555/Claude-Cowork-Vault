@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T21:29:29+00:00",
+  "last_updated": "2026-03-08T20:35:39+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -279,125 +279,6 @@
         "blocker"
       ],
       "notes": "COMPLETED 2026-03-08 by Code agent.\n\n## Audit results\n5 git repos found on Z:. 1 collision: Z:/Projects/Working1/Security+_Analysis pointed to Home_Lab_2026.git remote — deleted per Mimir's instruction (stale clone, 3 commits, no vault infrastructure).\n\n## Migration executed\nAll three repos moved from C:/Users/Erinh/Desktop/ to Z:/Projects/ML_OS/:\n- Home_Lab_2026 (514M) — git intact, ingest.py verified working\n- OpenClaw_Claude (48M) — git intact, on session branch session/mlos-dev/2026-03-07/bwgh\n- ClaudeTest (538K) — no git repo, files intact\n\n## Post-move updates\n- .env updated: MLOS_ROOT=Z:/Projects/ML_OS, all paths now Z: based\n- Desktop originals removed (empty locked shells from Claude worktrees remain — clean up after session close)\n- Vault server needs restart from new location\n- Next Claude Code session must open from Z:/Projects/ML_OS/OpenClaw_Claude"
-    },
-    {
-      "id": "t-cfb705",
-      "title": "Explore Gemini + Google tools integration for large-context and cheap inference use cases",
-      "status": "open",
-      "priority": "medium",
-      "type": "idea",
-      "created": "2026-03-08T20:37:54+00:00",
-      "updated": "2026-03-08T20:37:54+00:00",
-      "tags": [
-        "gemini",
-        "google",
-        "context",
-        "integration",
-        "antigrav",
-        "notebooklm"
-      ],
-      "notes": "Mimir has Google Workspace Pro AI Ultra access (permanent, via beta tester program) and access to Antigrav IDE which has proprietary plugins for Google AI APIs including NotebookLM. Key insight: Gemini's primary advantage is massive context window + needle-in-a-haystack retrieval at low cost. This makes it a natural complement to Claude for specific use cases, not a replacement.\n\n## Identified use cases\n1. Large-context tasks on the cheap — feed entire vault, transcript history, engine files as context. Gemini handles the retrieval, Claude handles the reasoning and output.\n2. NotebookLM as queryable knowledge base — periodically sync vault docs and transcripts into a NotebookLM notebook. Agents query it for historical context instead of loading everything into the window.\n3. Google Drive as shared drive redundancy — Z: going down was a single point of failure. Drive doesn't have that problem.\n4. Antigrav IDE — investigate what Google APIs are scriptable vs GUI-only. If scriptable, map to current system gaps.\n\n## Design principle\nDo NOT redesign the coordination layer (git, vault, INBOX, session branches) for Google tools. Google tools slot INTO that layer as consumers or contributors — source of truth stays in git/vault.\n\n## Questions to answer\n1. What does Antigrav actually expose programmatically? API access or GUI only?\n2. Can NotebookLM be fed programmatically (Drive sync, API) or manual upload only?\n3. Which current open tasks could be partially closed by Google tools? (t-889a68 transcript capture, t-11cc79 transcript storage, t-cbeff8 context rot)\n4. What's the cost model — is Gemini API free under Workspace Ultra or separate billing?"
-    },
-    {
-      "id": "t-4e6704",
-      "title": "Implement per-turn repo freshness check across all agents",
-      "status": "open",
-      "priority": "high",
-      "type": "task",
-      "created": "2026-03-08T20:40:20+00:00",
-      "updated": "2026-03-08T20:40:20+00:00",
-      "tags": [
-        "sync",
-        "agents",
-        "coordination",
-        "git",
-        "freshness"
-      ],
-      "notes": "Each agent operates on whatever state they pulled at boot. No mechanism exists to detect if another agent pushed something mid-session. This causes stale reads — an agent acts on outdated task state, vault data, or INBOX without knowing it.\n\n## The pattern: dirty flag check on every turn\nBefore responding each turn, agent checks if remote is ahead of local. If yes, pull before proceeding. Check must be cheap — not a full pull, just a lightweight probe.\n\n## Recommended implementation: GitHub API commit hash check\nEach agent tracks the last commit hash it pulled. On every turn:\n  GET https://api.github.com/repos/mrmeman555/Claude-Cowork-Vault/commits?per_page=1\n  GET https://api.github.com/repos/mrmeman555/OpenClaw_Claude/commits?per_page=1\nCompare returned sha against last-known sha. If different — pull, log it, then proceed.\nOne API call per repo per turn. Fast, no extra infrastructure, works from any surface.\n\n## What needs to be built\n1. Standard preamble protocol — document the check as a required step in CLAUDE.md and engine files. Agents that can run git do a pull. Cloud agents (Claude Chat) note the drift and flag it.\n2. Update /sync command — already does a freshness check, but only on demand. This makes it continuous.\n3. Store last-known sha — agents need somewhere to track this. Options: in-memory per session (simplest), or written to a local state file.\n4. Acknowledgement pattern — when an agent pulls mid-session, it should briefly note what changed before continuing. Not verbose, just: 'Pulled — 2 new commits on Claude-Cowork-Vault (task updates).'\n\n## Scope\n- Claude Code agents: run git pull directly\n- Claude Chat agents (this surface): cannot pull directly, but can hit GitHub API and flag drift to operator\n- Bootstrap: already pulls at session start — this closes the mid-session gap\n\n## Relation to existing tasks\n- Extends /sync command (already in .claude/commands/)\n- Complements t-47b4df (active watcher) — watcher handles local file changes, this handles remote changes\n- Should be documented in CLAUDE.md as part of boot sequence Step 0"
-    },
-    {
-      "id": "t-d47609",
-      "title": "Centralize Claude Code transcripts from all devices to shared drive for unified watcher ingestion",
-      "status": "open",
-      "priority": "high",
-      "type": "task",
-      "created": "2026-03-08T20:46:03+00:00",
-      "updated": "2026-03-08T21:14:54.011505+00:00",
-      "tags": [
-        "transcripts",
-        "multi-device",
-        "watcher",
-        "sync",
-        "claude-code"
-      ],
-      "notes": "IMPLEMENT IMMEDIATELY. Highest priority build task.\n\n## Why urgent\nWithout this, every agent is blind to what every other agent is doing in real time. Transcripts sit on the machine that produced them and go nowhere. Goal: near-real-time transcript sharing across all devices via shared drive so any agent can read any other agent's live session.\n\n## Device inventory (confirmed)\n- device-1: Windows (primary), shared drive at Z:/Projects/ML_OS/\n- device-2: Linux (aaron-ROG), shared drive at /mnt/share/Projects/ML_OS/\n\n## Step 1 — Create target folder structure on shared drive\n  mkdir -p /mnt/share/Projects/ML_OS/transcripts/device-1\n  mkdir -p /mnt/share/Projects/ML_OS/transcripts/device-2\n\n## Step 2 — Device 1 (Windows): scheduled robocopy every 1 minute\n  schtasks /create /tn \"MLOS-TranscriptSync\" /tr \"robocopy %USERPROFILE%\\.claude\\projects Z:\\Projects\\ML_OS\\transcripts\\device-1 *.jsonl /E /XO /R:1 /W:1\" /sc minute /mo 1 /f\n  Verify: Z:\\Projects\\ML_OS\\transcripts\\device-1\\ should have .jsonl files within 1 minute.\n\n## Step 3 — Device 2 (Linux): cron job every 1 minute\n  Add to crontab (crontab -e):\n    * * * * * rsync -av --ignore-existing ~/.claude/projects/ /mnt/share/Projects/ML_OS/transcripts/device-2/ --include=\"*.jsonl\" --include=\"*/\" --exclude=\"*\" 2>/dev/null\n\n  Or for true real-time using inotifywait:\n    sudo apt-get install inotify-tools\n    Create ~/.mlos/transcript-sync.sh:\n      #!/bin/bash\n      while inotifywait -r -e close_write ~/.claude/projects/; do\n        rsync -av --ignore-existing ~/.claude/projects/ /mnt/share/Projects/ML_OS/transcripts/device-2/ --include=\"*.jsonl\" --include=\"*/\" --exclude=\"*\"\n      done\n\n## Step 4 — Update watcher.py to watch shared drive transcript store\nIn Home_Lab_2026/.mlos/watcher.py add both device folders as watched paths:\n  /mnt/share/Projects/ML_OS/transcripts/device-1/\n  /mnt/share/Projects/ML_OS/transcripts/device-2/\nTag ingested transcripts with source device for provenance.\n\n## Step 5 — Add sync step to session-close.sh\nBefore git operations add:\n  rsync -av --ignore-existing ~/.claude/projects/ /mnt/share/Projects/ML_OS/transcripts/device-2/ --include=\"*.jsonl\" --include=\"*/\" --exclude=\"*\"\n\n## Acceptance criteria\n1. Claude Code session on device-1 -> within 1 min, .jsonl appears in transcripts/device-1/\n2. Claude Code session on device-2 -> within 1 min, .jsonl appears in transcripts/device-2/\n3. watcher.py parse on a shared drive transcript file succeeds\n4. Device-1 scheduled task survives reboot\n5. Device-2 cron survives reboot\n\n## What NOT to do\n- Do not move files, copy only — originals stay in ~/.claude/projects/\n- Do not change .jsonl format — watcher.py already parses it\n- Do not use Z: paths on Linux — use /mnt/share/ equivalents"
-    },
-    {
-      "id": "t-efb140",
-      "title": "Agent booted with stale vault — Claude-Cowork-Vault pull not happening at boot",
-      "status": "open",
-      "priority": "high",
-      "type": "task",
-      "created": "2026-03-08T21:15:40+00:00",
-      "updated": "2026-03-08T21:15:40+00:00",
-      "tags": [
-        "boot",
-        "freshness",
-        "vault",
-        "sync",
-        "GAP"
-      ],
-      "notes": "Observed 2026-03-08: Linux agent (device-2) booted from OpenClaw_Claude but read stale Claude-Cowork-Vault tasks. Could not find t-d47609 which had been pushed. Root cause: CLAUDE.md Step 0d runs ingest.py task list but does not first pull Claude-Cowork-Vault. The agent pulls OpenClaw_Claude at boot but not the vault repo — they are two separate repos. Fix: add explicit git pull step for Claude-Cowork-Vault to CLAUDE.md Step 0, before the task query. Command to add: cd $MLOS_ROOT/Home_Lab_2026 && git pull origin main. This is a concrete instance of the problem t-4e6704 describes (per-turn freshness check). For now the immediate fix is just adding the vault pull to Step 0d in CLAUDE.md."
-    },
-    {
-      "id": "t-6e4c24",
-      "title": "SQLite watcher.db locking on shared drive — needs per-device local DB + merge layer",
-      "status": "open",
-      "priority": "medium",
-      "type": "task",
-      "created": "2026-03-08T21:25:53+00:00",
-      "updated": "2026-03-08T21:25:53+00:00",
-      "tags": [
-        "watcher",
-        "sqlite",
-        "multi-device",
-        "architecture"
-      ],
-      "notes": "Hit during t-d47609 implementation: watcher.py uses a single watcher.db on the shared drive. When two devices run parse-all simultaneously, SQLite locks. Current workaround: WATCHER_DB=/tmp/local.db env var. Proper solution: each device maintains its own local DB (e.g. ~/.mlos/watcher.db), and watcher.py has a read layer that can query across both when doing sessions/activity queries. OR use WAL mode (sqlite journal_mode=WAL) which handles concurrent readers better — simpler fix. Evaluate WAL first, fall back to per-device DB if still problematic."
-    },
-    {
-      "id": "t-17a04a",
-      "title": "Add completion_steps field to task schema — enforce commit+push+close on every task",
-      "status": "open",
-      "priority": "medium",
-      "type": "task",
-      "created": "2026-03-08T21:29:29+00:00",
-      "updated": "2026-03-08T21:29:29+00:00",
-      "tags": [
-        "tasks",
-        "schema",
-        "agent-behavior",
-        "protocol"
-      ],
-      "notes": "Problem: agents complete implementation work but don't commit, push, or mark tasks done. They treat 'working locally' as done. Fix: add a mandatory completion_steps block to the task notes template. Every task that touches files must include: git add -A && git commit -m 'feat: t-XXXX — description' && git push && python3 .mlos/ingest.py task update --id t-XXXX --status done. Also update CLAUDE.md task execution protocol to say: a task is not done until committed, pushed, and marked done in vault. Consider adding completion_steps as a first-class field in tasks.json schema so ingest.py can surface it automatically when an agent picks up a task."
-    },
-    {
-      "id": "t-2383a6",
-      "title": "Custom git merge driver for events.jsonl and tasks.json — stop recurring rebase conflicts",
-      "status": "open",
-      "priority": "high",
-      "type": "task",
-      "created": "2026-03-08T21:29:29+00:00",
-      "updated": "2026-03-08T21:29:29+00:00",
-      "tags": [
-        "git",
-        "merge",
-        "conflicts",
-        "architecture",
-        "events",
-        "tasks"
-      ],
-      "notes": "Root cause: both agents append to events.jsonl and tasks.json independently. Git sees two diverged versions and conflicts every time. Current workaround: agent takes --theirs, which silently drops local changes. This is dangerous for an events log. Fix: implement a custom git merge driver that knows the semantics of each file. For events.jsonl: merge driver should concatenate all entries from both sides, deduplicate by event ID/timestamp, and sort chronologically. For tasks.json: merge driver should merge by task ID — if same task modified on both sides, take the newer updated timestamp. Implementation: 1) Write a Python merge script (.mlos/merge-driver.py) that handles both files. 2) Register in .gitattributes: .mlos/events.jsonl merge=mlos-append and vault/mlos-dev/tasks.json merge=mlos-tasks. 3) Register driver in .git/config: [merge 'mlos-append'] driver = python3 .mlos/merge-driver.py %O %A %B. This eliminates the recurring conflict entirely without requiring agent coordination."
     }
   ]
 }

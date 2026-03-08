@@ -1,0 +1,122 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-03-06T01:04:26+00:00",
+  "tasks": [
+    {
+      "id": "t-cbeff8",
+      "title": "Address context-rotting static files",
+      "status": "in_progress",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-06T00:05:22+00:00",
+      "updated": "2026-03-06T00:07:56+00:00",
+      "tags": [
+        "context-rot",
+        "vault-system"
+      ],
+      "notes": "decisions.md, session-history.md, pickup.md rot between sessions — replace with maintainable alternatives"
+    },
+    {
+      "id": "t-8bb55a",
+      "title": "Evaluate OpenClaw for Tier 2 watcher agents",
+      "status": "open",
+      "priority": "medium",
+      "type": "idea",
+      "created": "2026-03-06T00:07:59+00:00",
+      "updated": "2026-03-06T00:07:59+00:00",
+      "tags": [
+        "watcher",
+        "automation"
+      ],
+      "notes": "Persistent intelligent agents for session-history and decisions updates"
+    },
+    {
+      "id": "t-13274f",
+      "title": "Explore .claude directory for vault integration",
+      "status": "open",
+      "priority": "medium",
+      "type": "task",
+      "created": "2026-03-06T00:40:44+00:00",
+      "updated": "2026-03-06T00:40:44+00:00",
+      "tags": [
+        "claude-code",
+        "context"
+      ],
+      "notes": "Investigate transcript files, memories, settings, and other .claude contents. Determine what can be incorporated into the vault system for better context persistence."
+    },
+    {
+      "id": "t-4637b2",
+      "title": "Research MCP servers for vault system",
+      "status": "open",
+      "priority": "medium",
+      "type": "idea",
+      "created": "2026-03-06T00:40:46+00:00",
+      "updated": "2026-03-06T00:40:46+00:00",
+      "tags": [
+        "mcp",
+        "integration"
+      ],
+      "notes": "Look into MCP (Model Context Protocol) servers — could provide structured tool access to vault operations, task tracking, and context loading for any Claude interface."
+    },
+    {
+      "id": "t-f79cdc",
+      "title": "Research sub-agents for vault automation",
+      "status": "open",
+      "priority": "medium",
+      "type": "idea",
+      "created": "2026-03-06T00:40:48+00:00",
+      "updated": "2026-03-06T00:40:48+00:00",
+      "tags": [
+        "agents",
+        "automation"
+      ],
+      "notes": "Investigate Claude Code sub-agents and Agent SDK for automating vault operations — potential path for Tier 2 watcher agents, context maintenance, and multi-step workflows."
+    },
+    {
+      "id": "t-b7e972",
+      "title": "Track chat sessions per project (transcript linkage)",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-06T00:42:25+00:00",
+      "updated": "2026-03-06T00:42:25+00:00",
+      "tags": [
+        "context",
+        "sessions",
+        "transcripts"
+      ],
+      "notes": "Track which Claude sessions interacted with each project. Link to specific transcript .jsonl files. Need to solve auto-detection of current session ID. Design: per-project sessions.json or extend event log."
+    },
+    {
+      "id": "t-fa0b53",
+      "title": "Add provenance tracking to tasks (transcript + message linkage)",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-06T00:43:46+00:00",
+      "updated": "2026-03-06T00:43:46+00:00",
+      "tags": [
+        "context",
+        "provenance",
+        "transcripts"
+      ],
+      "notes": "When tasks are created or modified, record which transcript file and ideally which message triggered the change. This creates a traceable chain from task back to the conversation that spawned it. Could store as metadata on each task entry (created_from, modified_from fields) pointing to transcript:message_id pairs."
+    },
+    {
+      "id": "t-2508bc",
+      "title": "Transform ML OS demo into agent-facing context pack builder",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-06T01:00:13+00:00",
+      "updated": "2026-03-06T01:04:26+00:00",
+      "tags": [
+        "ml-os",
+        "agents",
+        "context-packs",
+        "tooling"
+      ],
+      "notes": "CLI-first, not UI-first. Any agent should be able to compose context packs via commands — select kernel, schema, scenario, attach vault sources, stamp with provenance, output a deployable seed prompt. The web UI is secondary. Priority: (1) CLI compose toolchain (2) API endpoints for remote agents (3) Optional web composer. The created agent's context pack should reference the transcript/session where it was designed. Ties to t-fa0b53 (provenance) and t-b7e972 (session tracking)."
+    }
+  ]
+}

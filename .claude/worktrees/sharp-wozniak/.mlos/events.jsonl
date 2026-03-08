@@ -13,15 +13,3 @@
 {"timestamp": "2026-03-06T00:43:46+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-fa0b53", "title": "Add provenance tracking to tasks (transcript + message linkage)", "type": "task"}
 {"timestamp": "2026-03-06T01:00:13+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-2508bc", "title": "Transform ML OS demo into agent-facing context pack builder", "type": "task"}
 {"timestamp": "2026-03-06T01:04:26+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-2508bc", "changes": "notes updated"}
-{"timestamp": "2026-03-08T03:50:15+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-9271e6", "title": "Build browser extension for real-time Claude Chat transcript capture", "type": "task"}
-{"timestamp": "2026-03-08T04:00:32+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-47b4df", "title": "Add active file watcher to watcher.py for real-time transcript ingestion", "type": "task"}
-{"timestamp": "2026-03-08T04:08:45+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-265094", "title": "Design system for agents to self-modify boot sequences, engines, and CLAUDE.md", "type": "idea"}
-{"timestamp": "2026-03-08T04:12:59+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-11cc79", "title": "Figure out what to do with stored Claude Chat transcript URLs", "type": "task"}
-{"timestamp": "2026-03-08T13:15:42+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-674952", "title": "Refactor hardcoded paths to use MLOS_ROOT env var for multi-device support", "type": "task"}
-{"timestamp": "2026-03-08T13:44:10+00:00", "action": "task_done", "project": "mlos-dev", "task_id": "t-674952", "title": "Refactor hardcoded paths to use MLOS_ROOT env var for multi-device support"}
-{"timestamp": "2026-03-08T14:00:00+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-6957e3", "title": "Audit shared drive for existing git repos before folder migration", "type": "task"}
-{"timestamp": "2026-03-08T14:29:33+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-6957e3", "changes": "status=in_progress, notes updated"}
-{"timestamp": "2026-03-08T14:29:44+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-674952", "changes": "notes updated"}
-{"timestamp": "2026-03-08T20:35:12+00:00", "action": "task_done", "project": "mlos-dev", "task_id": "t-6957e3", "title": "Audit shared drive for existing git repos before folder migration"}
-{"timestamp": "2026-03-08T20:35:24+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-6957e3", "changes": "notes updated"}
-{"timestamp": "2026-03-08T20:35:39+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-674952", "changes": "status=done, notes updated"}
