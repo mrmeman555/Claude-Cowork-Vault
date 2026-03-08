@@ -115,6 +115,7 @@ if [ ${#OPEN_BRANCHES[@]} -gt 0 ]; then
     if [[ "$session_pick" =~ ^[0-9]+$ ]] && [ "$session_pick" -ge 1 ] && [ "$session_pick" -le ${#OPEN_BRANCHES[@]} ]; then
       BRANCH="${OPEN_BRANCHES[$((session_pick-1))]}"
       git checkout "$BRANCH" --quiet 2>/dev/null
+      git push origin "$BRANCH" --quiet 2>/dev/null || true
       echo -e "${GREEN}✓ Joined session: ${BOLD}${BRANCH}${RESET}"
     else
       echo -e "${RED}Invalid selection. Exiting.${RESET}"
@@ -129,7 +130,9 @@ if [ ${#OPEN_BRANCHES[@]} -gt 0 ]; then
     git checkout main --quiet 2>/dev/null
     git pull origin main --quiet 2>/dev/null || true
     git checkout -b "$BRANCH" --quiet
+    git push origin "$BRANCH" --quiet
     echo -e "${GREEN}✓ Branch: ${BOLD}${BRANCH}${RESET}"
+    echo -e "${GREEN}✓ Branch pushed to remote${RESET}"
   fi
 else
   # No existing sessions — create new
@@ -140,7 +143,9 @@ else
   git checkout main --quiet 2>/dev/null
   git pull origin main --quiet 2>/dev/null || true
   git checkout -b "$BRANCH" --quiet
+  git push origin "$BRANCH" --quiet
   echo -e "${GREEN}✓ Branch: ${BOLD}${BRANCH}${RESET}"
+  echo -e "${GREEN}✓ Branch pushed to remote${RESET}"
 fi
 
 # ─── Register this chat in .session-chats.json ───────────────────────────────
