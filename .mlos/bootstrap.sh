@@ -8,6 +8,9 @@ set -e
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+# Normalize MSYS path (/c/Users/...) to Windows format (C:/Users/...) for Python
+REPO_ROOT=$(echo "$REPO_ROOT" | sed 's|^/\([a-zA-Z]\)/|\1:/|')
+SCRIPT_DIR=$(echo "$SCRIPT_DIR" | sed 's|^/\([a-zA-Z]\)/|\1:/|')
 VAULT_DIR="$REPO_ROOT/vault"
 INGEST="$SCRIPT_DIR/ingest.py"
 SERVER="$REPO_ROOT/server.py"
