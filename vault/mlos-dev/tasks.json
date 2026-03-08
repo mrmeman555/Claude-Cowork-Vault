@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-06T01:04:26+00:00",
+  "last_updated": "2026-03-08T02:23:43+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -117,6 +117,17 @@
         "tooling"
       ],
       "notes": "CLI-first, not UI-first. Any agent should be able to compose context packs via commands — select kernel, schema, scenario, attach vault sources, stamp with provenance, output a deployable seed prompt. The web UI is secondary. Priority: (1) CLI compose toolchain (2) API endpoints for remote agents (3) Optional web composer. The created agent's context pack should reference the transcript/session where it was designed. Ties to t-fa0b53 (provenance) and t-b7e972 (session tracking)."
+    },
+    {
+      "id": "t-50fea1",
+      "title": "Design context pack generator — grounding prompt factory for domain-specific agent environments",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-08T02:23:43+00:00",
+      "updated": "2026-03-08T02:23:43+00:00",
+      "tags": [],
+      "notes": "Based on ML OS Case Study 001 (Net+ Autonomous Grounding). Generator takes: domain description, intellectual history, canonical state, operator profile, identifiable gap. Outputs: complete .context/ folder with mimir.md, workspace.md, engine file with Phase 0, CLAUDE.md boot sequence. Reference: Runtime Grounding Sequence protocol (Identity Recall > State Ingestion > History Loading > Artifact Contextualization > Gap Identification). Added by cloud agent (Claude Chat) session 2026-03-07."
     }
   ]
 }
