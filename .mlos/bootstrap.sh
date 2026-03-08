@@ -16,11 +16,15 @@ OPENCLAW_DIR="C:/Users/Erinh/Desktop/OpenClaw_Claude"
 API_BASE="http://localhost:${SERVER_PORT}/api"
 
 # Detect python command — handle Windows Store alias interference
-if python3 --version &>/dev/null 2>&1; then
-  PY=python3
-elif python --version &>/dev/null 2>&1; then
-  PY=python
-else
+# The Store alias intercepts python3 even for --version, so test with actual import
+PY=""
+for cmd in python python3; do
+  if "$cmd" -c "import sys; sys.exit(0)" 2>/dev/null; then
+    PY="$cmd"
+    break
+  fi
+done
+if [ -z "$PY" ]; then
   echo "Error: Python not found. Please ensure Python is installed."
   exit 1
 fi
@@ -141,19 +145,30 @@ CHATS_FILE="$VAULT_DIR/$PROJECT/.session-chats.json"
 CHAT_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
 TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
+# Ensure project directory exists
+mkdir -p "$VAULT_DIR/$PROJECT"
+
 if [ -f "$CHATS_FILE" ]; then
   # Append to existing array
   $PY -c "
-import json
-with open('$CHATS_FILE') as f:
-    chats = json.load(f)
+import json, sys
+try:
+    with open('$CHATS_FILE') as f:
+        chats = json.load(f)
+except (json.JSONDecodeError, FileNotFoundError):
+    chats = []
 chats.append({'chat_id': '$CHAT_ID', 'joined': '$TIMESTAMP', 'surface': 'claude-code'})
 with open('$CHATS_FILE', 'w') as f:
     json.dump(chats, f, indent=2)
 "
 else
   # Create new file
-  echo "[{\"chat_id\": \"$CHAT_ID\", \"joined\": \"$TIMESTAMP\", \"surface\": \"claude-code\"}]" > "$CHATS_FILE"
+  $PY -c "
+import json
+chats = [{'chat_id': '$CHAT_ID', 'joined': '$TIMESTAMP', 'surface': 'claude-code'}]
+with open('$CHATS_FILE', 'w') as f:
+    json.dump(chats, f, indent=2)
+"
 fi
 echo -e "${DIM}Chat registered: ${CHAT_ID}${RESET}"
 

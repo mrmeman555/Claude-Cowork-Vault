@@ -9,11 +9,15 @@ set -e
 OPENCLAW_DIR="C:/Users/Erinh/Desktop/OpenClaw_Claude"
 
 # Detect python command — handle Windows Store alias interference
-if python3 --version &>/dev/null 2>&1; then
-  PY=python3
-elif python --version &>/dev/null 2>&1; then
-  PY=python
-else
+# The Store alias intercepts python3 even for --version, so test with actual import
+PY=""
+for cmd in python python3; do
+  if "$cmd" -c "import sys; sys.exit(0)" 2>/dev/null; then
+    PY="$cmd"
+    break
+  fi
+done
+if [ -z "$PY" ]; then
   echo "Error: Python not found. Please ensure Python is installed."
   exit 1
 fi
