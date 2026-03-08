@@ -16,7 +16,7 @@
         "generated-context",
         "api"
       ],
-      "notes": "decisions.md, session-history.md, pickup.md rot between sessions — replace with maintainable alternatives. EXTENDED: The vault project view currently stores static agent-written files (project-state.md, decisions.md, session-history.md, pickup.md). These should NOT be stored documents — they should be generated on-demand from live sources of truth: tasks.json, git log, watcher.db, session branches. Solution: GET /api/project/{name}/context endpoint that assembles a fresh snapshot at query time. Permanent artifacts (case studies, design docs, real work products) stay as files. System state summaries are never stored — always generated."
+      "notes": "decisions.md, session-history.md, pickup.md rot between sessions \u2014 replace with maintainable alternatives. EXTENDED: The vault project view currently stores static agent-written files (project-state.md, decisions.md, session-history.md, pickup.md). These should NOT be stored documents \u2014 they should be generated on-demand from live sources of truth: tasks.json, git log, watcher.db, session branches. Solution: GET /api/project/{name}/context endpoint that assembles a fresh snapshot at query time. Permanent artifacts (case studies, design docs, real work products) stay as files. System state summaries are never stored \u2014 always generated."
     },
     {
       "id": "t-8bb55a",
@@ -58,7 +58,7 @@
         "mcp",
         "integration"
       ],
-      "notes": "Look into MCP (Model Context Protocol) servers — could provide structured tool access to vault operations, task tracking, and context loading for any Claude interface."
+      "notes": "Look into MCP (Model Context Protocol) servers \u2014 could provide structured tool access to vault operations, task tracking, and context loading for any Claude interface."
     },
     {
       "id": "t-f79cdc",
@@ -72,7 +72,7 @@
         "agents",
         "automation"
       ],
-      "notes": "Investigate Claude Code sub-agents and Agent SDK for automating vault operations — potential path for Tier 2 watcher agents, context maintenance, and multi-step workflows."
+      "notes": "Investigate Claude Code sub-agents and Agent SDK for automating vault operations \u2014 potential path for Tier 2 watcher agents, context maintenance, and multi-step workflows."
     },
     {
       "id": "t-b7e972",
@@ -118,11 +118,11 @@
         "context-packs",
         "tooling"
       ],
-      "notes": "CLI-first, not UI-first. Any agent should be able to compose context packs via commands — select kernel, schema, scenario, attach vault sources, stamp with provenance, output a deployable seed prompt. The web UI is secondary. Priority: (1) CLI compose toolchain (2) API endpoints for remote agents (3) Optional web composer. The created agent's context pack should reference the transcript/session where it was designed. Ties to t-fa0b53 (provenance) and t-b7e972 (session tracking)."
+      "notes": "CLI-first, not UI-first. Any agent should be able to compose context packs via commands \u2014 select kernel, schema, scenario, attach vault sources, stamp with provenance, output a deployable seed prompt. The web UI is secondary. Priority: (1) CLI compose toolchain (2) API endpoints for remote agents (3) Optional web composer. The created agent's context pack should reference the transcript/session where it was designed. Ties to t-fa0b53 (provenance) and t-b7e972 (session tracking)."
     },
     {
       "id": "t-50fea1",
-      "title": "Design context pack generator — grounding prompt factory for domain-specific agent environments",
+      "title": "Design context pack generator \u2014 grounding prompt factory for domain-specific agent environments",
       "status": "open",
       "priority": "high",
       "type": "task",
@@ -151,7 +151,7 @@
       "created": "2026-03-08T02:30:26+00:00",
       "updated": "2026-03-08T02:30:26+00:00",
       "tags": [],
-      "notes": "Add created_from (session branch or chat URL) and agent_id (e.g. 'cloud-agent', 'code-agent', 'operator') to tasks.json schema. Update ingest.py task add with optional --session and --agent flags. Backward compatible — existing tasks get null for new fields. Closes GAP-002 partially."
+      "notes": "Add created_from (session branch or chat URL) and agent_id (e.g. 'cloud-agent', 'code-agent', 'operator') to tasks.json schema. Update ingest.py task add with optional --session and --agent flags. Backward compatible \u2014 existing tasks get null for new fields. Closes GAP-002 partially."
     },
     {
       "id": "t-2da901",
@@ -165,7 +165,7 @@
         "vault-browser",
         "quick-win"
       ],
-      "notes": "Temp workaround until direct API sync is implemented. Button on tasks page that re-fetches /api/tasks and updates the view. No page reload needed — just re-query and re-render."
+      "notes": "Temp workaround until direct API sync is implemented. Button on tasks page that re-fetches /api/tasks and updates the view. No page reload needed \u2014 just re-query and re-render."
     },
     {
       "id": "t-49c238",
@@ -180,7 +180,7 @@
         "sync",
         "cloud-agent"
       ],
-      "notes": "Current path: cloud agent → GitHub → git pull → local file → browser. 4 hops, manual. Target: expose localhost:3001 via Cloudflare Tunnel or ngrok, cloud agent writes directly to POST /api/tasks, SSE pushes update to browser instantly. Git reverts to its proper role: version control + session branches only, not sync layer."
+      "notes": "Current path: cloud agent \u2192 GitHub \u2192 git pull \u2192 local file \u2192 browser. 4 hops, manual. Target: expose localhost:3001 via Cloudflare Tunnel or ngrok, cloud agent writes directly to POST /api/tasks, SSE pushes update to browser instantly. Git reverts to its proper role: version control + session branches only, not sync layer."
     },
     {
       "id": "t-9271e6",
@@ -196,7 +196,7 @@
         "context",
         "sessions"
       ],
-      "notes": "Real-time DOM observer on claude.ai. MutationObserver watches message container — captures {role, text, timestamp, message_id} on each new message node. Logs deletions as events (append-only event log, not a mirror). Native Messaging Host writes to vault/{project}/.session-transcripts/{chat_id}.jsonl — same .jsonl format as Claude Code transcripts so watcher.py can parse both surfaces. Transcript registered in .session-chats.json with surface: claude-chat. Key design decisions: (1) capture on send/receive only not drafts, (2) deletion = logged event not silent drop, (3) timestamps preserved. Closes the cloud agent context gap — without this, Claude Chat sessions leave no local artifact. Session-association model: transcript lives on the session branch under .session-transcripts/, merged to main when session closes."
+      "notes": "Real-time DOM observer on claude.ai. MutationObserver watches message container \u2014 captures {role, text, timestamp, message_id} on each new message node. Logs deletions as events (append-only event log, not a mirror). Native Messaging Host writes to vault/{project}/.session-transcripts/{chat_id}.jsonl \u2014 same .jsonl format as Claude Code transcripts so watcher.py can parse both surfaces. Transcript registered in .session-chats.json with surface: claude-chat. Key design decisions: (1) capture on send/receive only not drafts, (2) deletion = logged event not silent drop, (3) timestamps preserved. Closes the cloud agent context gap \u2014 without this, Claude Chat sessions leave no local artifact. Session-association model: transcript lives on the session branch under .session-transcripts/, merged to main when session closes."
     },
     {
       "id": "t-47b4df",
@@ -212,7 +212,7 @@
         "real-time",
         "GAP-008"
       ],
-      "notes": "watcher.py is currently parse-on-demand only — requires manual invocation of 'watcher.py parse <file>'. No active watching loop exists. Fix: add a watchdog daemon mode using Python watchdog library (or polling fallback) that monitors ~/.claude/projects/ for new or modified .jsonl files and auto-parses them into watcher.db as they're written. This is GAP-008. Related: t-9271e6 (browser extension for Claude Chat) is the same problem on a different surface — both should write to the same .jsonl format and downstream pipeline."
+      "notes": "watcher.py is currently parse-on-demand only \u2014 requires manual invocation of 'watcher.py parse <file>'. No active watching loop exists. Fix: add a watchdog daemon mode using Python watchdog library (or polling fallback) that monitors ~/.claude/projects/ for new or modified .jsonl files and auto-parses them into watcher.db as they're written. This is GAP-008. Related: t-9271e6 (browser extension for Claude Chat) is the same problem on a different surface \u2014 both should write to the same .jsonl format and downstream pipeline."
     },
     {
       "id": "t-265094",
@@ -230,7 +230,7 @@
         "CLAUDE.md",
         "reflexivity"
       ],
-      "notes": "Currently CLAUDE.md, engine files, and boot sequences are manually maintained. Agents notice drift and emergence (flow.md reflexivity protocol) but can't act on it — they can only surface observations to Mimir. Goal: give agents a sanctioned pathway to propose and commit modifications to their own operational context. Design questions: (1) What can an agent modify autonomously vs what requires Mimir approval? (2) How do proposed changes get reviewed before merging — PR model, INBOX proposal, or direct commit with revert option? (3) Which files are in scope: CLAUDE.md, .context/engines/, .context/workspace.md, .context/mimir.md (probably never), .claude/commands/? (4) How does the agent know if its modification worked — what's the feedback loop? (5) How do we prevent drift accumulation where each agent nudges the boot sequence in a slightly different direction? Related: flow.md reflexivity protocol, t-cbeff8 (context rot), GAP-009 (CLAUDE.md files uncoordinated). This is the long-term path to a self-improving workspace."
+      "notes": "Currently CLAUDE.md, engine files, and boot sequences are manually maintained. Agents notice drift and emergence (flow.md reflexivity protocol) but can't act on it \u2014 they can only surface observations to Mimir. Goal: give agents a sanctioned pathway to propose and commit modifications to their own operational context. Design questions: (1) What can an agent modify autonomously vs what requires Mimir approval? (2) How do proposed changes get reviewed before merging \u2014 PR model, INBOX proposal, or direct commit with revert option? (3) Which files are in scope: CLAUDE.md, .context/engines/, .context/workspace.md, .context/mimir.md (probably never), .claude/commands/? (4) How does the agent know if its modification worked \u2014 what's the feedback loop? (5) How do we prevent drift accumulation where each agent nudges the boot sequence in a slightly different direction? Related: flow.md reflexivity protocol, t-cbeff8 (context rot), GAP-009 (CLAUDE.md files uncoordinated). This is the long-term path to a self-improving workspace."
     },
     {
       "id": "t-11cc79",
@@ -246,7 +246,7 @@
         "context",
         "registry"
       ],
-      "notes": "Two Claude Chat share URLs stored in OpenClaw_Claude/.claude/transcripts/registry.md for session bwgh (2026-03-07). URLs: https://claude.ai/share/ef10710c-f1aa-4035-bc99-f5521c354a13 and https://claude.ai/share/e2be28ae-36c5-47b6-8514-e57cb590b018. Share pages return 403 when fetched programmatically. Questions to resolve: (1) Can Cowork browser agent scrape these while logged in? (2) Should the registry live on the session branch instead of main? (3) What schema should transcript entries follow when t-9271e6 is built — how do URL-based entries migrate to local .jsonl entries? (4) Should INBOX point to registry.md so boot agents know transcripts exist?"
+      "notes": "Two Claude Chat share URLs stored in OpenClaw_Claude/.claude/transcripts/registry.md for session bwgh (2026-03-07). URLs: https://claude.ai/share/ef10710c-f1aa-4035-bc99-f5521c354a13 and https://claude.ai/share/e2be28ae-36c5-47b6-8514-e57cb590b018. Share pages return 403 when fetched programmatically. Questions to resolve: (1) Can Cowork browser agent scrape these while logged in? (2) Should the registry live on the session branch instead of main? (3) What schema should transcript entries follow when t-9271e6 is built \u2014 how do URL-based entries migrate to local .jsonl entries? (4) Should INBOX point to registry.md so boot agents know transcripts exist?"
     },
     {
       "id": "t-674952",
@@ -255,14 +255,14 @@
       "priority": "high",
       "type": "task",
       "created": "2026-03-08T13:15:42+00:00",
-      "updated": "2026-03-08T13:15:42+00:00",
+      "updated": "2026-03-08T13:33:47.907993+00:00",
       "tags": [
         "paths",
         "multi-device",
         "env",
         "portability"
       ],
-      "notes": "All three Desktop paths are hardcoded across multiple files. Full list of affected files: (1) OpenClaw_Claude/CLAUDE.md — all three folder paths + CLI command examples. (2) OpenClaw_Claude/.claude/commands/setup-sync.md — Home_Lab_2026 path. (3) Home_Lab_2026/.mlos/bootstrap.sh — OPENCLAW_DIR hardcoded on line 18. (4) Home_Lab_2026/.mlos/session-close.sh — OPENCLAW_DIR + VAULT_DIR hardcoded. (5) Home_Lab_2026/.mlos/watcher.py — all three project paths in lookup table. (6) Home_Lab_2026/.mlos/ingest.py — ClaudeTest + Home_Lab_2026 paths. Fix: create Home_Lab_2026/.env with MLOS_ROOT, OPENCLAW_DIR, VAULT_DIR, CLAUDETEST_DIR. Each device sets this file once. All scripts source .env instead of hardcoding. CLAUDE.md updated to say paths live in .env. .env added to .gitignore so it stays device-local. DO THIS BEFORE moving folders to shared drive."
+      "notes": "All three Desktop paths are hardcoded across multiple files. DO THIS BEFORE moving folders to shared drive.\n\n## Current hardcoded values to replace\n- C:/Users/Erinh/Desktop/OpenClaw_Claude\n- C:/Users/Erinh/Desktop/Home_Lab_2026\n- C:/Users/Erinh/Desktop/ClaudeTest\n\n## Affected files (exact locations)\n1. OpenClaw_Claude/CLAUDE.md \u2014 lines 94-102: paths in linked workspaces table + CLI command examples\n2. OpenClaw_Claude/.claude/commands/setup-sync.md \u2014 line 20: Home_Lab_2026 path in git fetch command\n3. Home_Lab_2026/.mlos/bootstrap.sh \u2014 line 18: OPENCLAW_DIR=C:/Users/Erinh/Desktop/OpenClaw_Claude\n4. Home_Lab_2026/.mlos/session-close.sh \u2014 line 9: OPENCLAW_DIR, line 101: VAULT_DIR\n5. Home_Lab_2026/.mlos/watcher.py \u2014 lines 35-45: all three paths in project lookup table\n6. Home_Lab_2026/.mlos/ingest.py \u2014 lines 955, 989, 1004: ClaudeTest + Home_Lab_2026 paths\n\n## What to build\nCreate Home_Lab_2026/.env:\n  MLOS_ROOT=C:/Users/Erinh/Desktop\n  OPENCLAW_DIR=C:/Users/Erinh/Desktop/OpenClaw_Claude\n  VAULT_DIR=C:/Users/Erinh/Desktop/Home_Lab_2026/vault\n  CLAUDETEST_DIR=C:/Users/Erinh/Desktop/ClaudeTest\n\nUpdate all 6 files to read from .env instead of hardcoded values.\n- bash scripts: source .env at top\n- Python scripts: use python-dotenv or os.environ with fallback\nAdd .env to Home_Lab_2026/.gitignore so it stays device-local.\nUpdate CLAUDE.md linked workspaces table to say paths are device-local, defined in Home_Lab_2026/.env.\n\n## Acceptance criteria\n1. Run bootstrap.sh on the current machine \u2014 full session lifecycle completes without errors\n2. Manually change OPENCLAW_DIR in .env to a fake path \u2014 bootstrap.sh should fail with a clear error (not a cryptic one)\n3. Restore .env to correct values \u2014 bootstrap.sh works again\n4. Confirm .env does not appear in git status (gitignored)\n5. Confirm no remaining hardcoded Desktop paths: grep -r \"Erinh\" across all 6 files returns nothing"
     }
   ]
 }
