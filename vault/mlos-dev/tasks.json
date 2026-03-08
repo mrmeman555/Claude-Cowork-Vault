@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T20:37:54+00:00",
+  "last_updated": "2026-03-08T20:40:20+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -297,6 +297,23 @@
         "notebooklm"
       ],
       "notes": "Mimir has Google Workspace Pro AI Ultra access (permanent, via beta tester program) and access to Antigrav IDE which has proprietary plugins for Google AI APIs including NotebookLM. Key insight: Gemini's primary advantage is massive context window + needle-in-a-haystack retrieval at low cost. This makes it a natural complement to Claude for specific use cases, not a replacement.\n\n## Identified use cases\n1. Large-context tasks on the cheap — feed entire vault, transcript history, engine files as context. Gemini handles the retrieval, Claude handles the reasoning and output.\n2. NotebookLM as queryable knowledge base — periodically sync vault docs and transcripts into a NotebookLM notebook. Agents query it for historical context instead of loading everything into the window.\n3. Google Drive as shared drive redundancy — Z: going down was a single point of failure. Drive doesn't have that problem.\n4. Antigrav IDE — investigate what Google APIs are scriptable vs GUI-only. If scriptable, map to current system gaps.\n\n## Design principle\nDo NOT redesign the coordination layer (git, vault, INBOX, session branches) for Google tools. Google tools slot INTO that layer as consumers or contributors — source of truth stays in git/vault.\n\n## Questions to answer\n1. What does Antigrav actually expose programmatically? API access or GUI only?\n2. Can NotebookLM be fed programmatically (Drive sync, API) or manual upload only?\n3. Which current open tasks could be partially closed by Google tools? (t-889a68 transcript capture, t-11cc79 transcript storage, t-cbeff8 context rot)\n4. What's the cost model — is Gemini API free under Workspace Ultra or separate billing?"
+    },
+    {
+      "id": "t-4e6704",
+      "title": "Implement per-turn repo freshness check across all agents",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-08T20:40:20+00:00",
+      "updated": "2026-03-08T20:40:20+00:00",
+      "tags": [
+        "sync",
+        "agents",
+        "coordination",
+        "git",
+        "freshness"
+      ],
+      "notes": "Each agent operates on whatever state they pulled at boot. No mechanism exists to detect if another agent pushed something mid-session. This causes stale reads — an agent acts on outdated task state, vault data, or INBOX without knowing it.\n\n## The pattern: dirty flag check on every turn\nBefore responding each turn, agent checks if remote is ahead of local. If yes, pull before proceeding. Check must be cheap — not a full pull, just a lightweight probe.\n\n## Recommended implementation: GitHub API commit hash check\nEach agent tracks the last commit hash it pulled. On every turn:\n  GET https://api.github.com/repos/mrmeman555/Claude-Cowork-Vault/commits?per_page=1\n  GET https://api.github.com/repos/mrmeman555/OpenClaw_Claude/commits?per_page=1\nCompare returned sha against last-known sha. If different — pull, log it, then proceed.\nOne API call per repo per turn. Fast, no extra infrastructure, works from any surface.\n\n## What needs to be built\n1. Standard preamble protocol — document the check as a required step in CLAUDE.md and engine files. Agents that can run git do a pull. Cloud agents (Claude Chat) note the drift and flag it.\n2. Update /sync command — already does a freshness check, but only on demand. This makes it continuous.\n3. Store last-known sha — agents need somewhere to track this. Options: in-memory per session (simplest), or written to a local state file.\n4. Acknowledgement pattern — when an agent pulls mid-session, it should briefly note what changed before continuing. Not verbose, just: 'Pulled — 2 new commits on Claude-Cowork-Vault (task updates).'\n\n## Scope\n- Claude Code agents: run git pull directly\n- Claude Chat agents (this surface): cannot pull directly, but can hit GitHub API and flag drift to operator\n- Bootstrap: already pulls at session start — this closes the mid-session gap\n\n## Relation to existing tasks\n- Extends /sync command (already in .claude/commands/)\n- Complements t-47b4df (active watcher) — watcher handles local file changes, this handles remote changes\n- Should be documented in CLAUDE.md as part of boot sequence Step 0"
     }
   ]
 }
