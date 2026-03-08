@@ -67,21 +67,92 @@ fi
 
 echo -e "\n${GREEN}✓ Project: ${BOLD}${PROJECT}${RESET}"
 
-# ─── STEP 2: CREATE GIT BRANCH ────────────────────────────────────────────────
-DATE=$(date +%Y-%m-%d)
-SESSION_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 4 | head -n 1)
-BRANCH="session/${PROJECT}/${DATE}/${SESSION_ID}"
-
-echo ""
-echo -e "${CYAN}Creating session branch on OpenClaw_Claude...${RESET}"
-
+# ─── STEP 2: SESSION MODE (NEW or JOIN) ──────────────────────────────────────
 cd "$OPENCLAW_DIR"
-git fetch origin main --quiet 2>/dev/null || true
-git checkout main --quiet 2>/dev/null
-git pull origin main --quiet 2>/dev/null || true
-git checkout -b "$BRANCH" --quiet
+git fetch origin --quiet 2>/dev/null || true
 
-echo -e "${GREEN}✓ Branch: ${BOLD}${BRANCH}${RESET}"
+# Check for existing open session branches for this project
+OPEN_BRANCHES=()
+while IFS= read -r ref; do
+  [ -z "$ref" ] && continue
+  branch_name="${ref#refs/heads/}"
+  OPEN_BRANCHES+=("$branch_name")
+done < <(git for-each-ref --format='%(refname)' "refs/heads/session/${PROJECT}/" 2>/dev/null)
+
+DATE=$(date +%Y-%m-%d)
+
+if [ ${#OPEN_BRANCHES[@]} -gt 0 ]; then
+  echo ""
+  echo -e "${CYAN}Session mode:${RESET}"
+  echo -e "  ${AMBER}1)${RESET} New session (new branch)"
+  echo -e "  ${AMBER}2)${RESET} Join existing session"
+  echo ""
+  read -p "$(echo -e "${BOLD}Choice${RESET} [1/2]: ")" session_mode
+
+  if [[ "$session_mode" == "2" ]]; then
+    echo ""
+    echo -e "${CYAN}Open sessions for ${BOLD}${PROJECT}${RESET}${CYAN}:${RESET}"
+    si=1
+    for b in "${OPEN_BRANCHES[@]}"; do
+      # Show branch with age info
+      branch_date=$(echo "$b" | cut -d/ -f3)
+      echo -e "  ${AMBER}${si})${RESET} ${b}  ${DIM}(${branch_date})${RESET}"
+      ((si++))
+    done
+    echo ""
+    read -p "$(echo -e "${BOLD}Which session?${RESET} [number]: ")" session_pick
+
+    if [[ "$session_pick" =~ ^[0-9]+$ ]] && [ "$session_pick" -ge 1 ] && [ "$session_pick" -le ${#OPEN_BRANCHES[@]} ]; then
+      BRANCH="${OPEN_BRANCHES[$((session_pick-1))]}"
+      git checkout "$BRANCH" --quiet 2>/dev/null
+      echo -e "${GREEN}✓ Joined session: ${BOLD}${BRANCH}${RESET}"
+    else
+      echo -e "${RED}Invalid selection. Exiting.${RESET}"
+      exit 1
+    fi
+  else
+    # New session
+    SESSION_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 4 | head -n 1)
+    BRANCH="session/${PROJECT}/${DATE}/${SESSION_ID}"
+    echo ""
+    echo -e "${CYAN}Creating new session branch...${RESET}"
+    git checkout main --quiet 2>/dev/null
+    git pull origin main --quiet 2>/dev/null || true
+    git checkout -b "$BRANCH" --quiet
+    echo -e "${GREEN}✓ Branch: ${BOLD}${BRANCH}${RESET}"
+  fi
+else
+  # No existing sessions — create new
+  SESSION_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 4 | head -n 1)
+  BRANCH="session/${PROJECT}/${DATE}/${SESSION_ID}"
+  echo ""
+  echo -e "${CYAN}Creating session branch on OpenClaw_Claude...${RESET}"
+  git checkout main --quiet 2>/dev/null
+  git pull origin main --quiet 2>/dev/null || true
+  git checkout -b "$BRANCH" --quiet
+  echo -e "${GREEN}✓ Branch: ${BOLD}${BRANCH}${RESET}"
+fi
+
+# ─── Register this chat in .session-chats.json ───────────────────────────────
+CHATS_FILE="$VAULT_DIR/$PROJECT/.session-chats.json"
+CHAT_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
+TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+if [ -f "$CHATS_FILE" ]; then
+  # Append to existing array
+  $PY -c "
+import json
+with open('$CHATS_FILE') as f:
+    chats = json.load(f)
+chats.append({'chat_id': '$CHAT_ID', 'joined': '$TIMESTAMP', 'surface': 'claude-code'})
+with open('$CHATS_FILE', 'w') as f:
+    json.dump(chats, f, indent=2)
+"
+else
+  # Create new file
+  echo "[{\"chat_id\": \"$CHAT_ID\", \"joined\": \"$TIMESTAMP\", \"surface\": \"claude-code\"}]" > "$CHATS_FILE"
+fi
+echo -e "${DIM}Chat registered: ${CHAT_ID}${RESET}"
 
 # ─── STEP 3: START VAULT BROWSER ──────────────────────────────────────────────
 echo ""
