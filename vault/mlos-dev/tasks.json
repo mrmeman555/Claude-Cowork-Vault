@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T21:15:40+00:00",
+  "last_updated": "2026-03-08T21:25:53+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -348,6 +348,22 @@
         "GAP"
       ],
       "notes": "Observed 2026-03-08: Linux agent (device-2) booted from OpenClaw_Claude but read stale Claude-Cowork-Vault tasks. Could not find t-d47609 which had been pushed. Root cause: CLAUDE.md Step 0d runs ingest.py task list but does not first pull Claude-Cowork-Vault. The agent pulls OpenClaw_Claude at boot but not the vault repo — they are two separate repos. Fix: add explicit git pull step for Claude-Cowork-Vault to CLAUDE.md Step 0, before the task query. Command to add: cd $MLOS_ROOT/Home_Lab_2026 && git pull origin main. This is a concrete instance of the problem t-4e6704 describes (per-turn freshness check). For now the immediate fix is just adding the vault pull to Step 0d in CLAUDE.md."
+    },
+    {
+      "id": "t-6e4c24",
+      "title": "SQLite watcher.db locking on shared drive — needs per-device local DB + merge layer",
+      "status": "open",
+      "priority": "medium",
+      "type": "task",
+      "created": "2026-03-08T21:25:53+00:00",
+      "updated": "2026-03-08T21:25:53+00:00",
+      "tags": [
+        "watcher",
+        "sqlite",
+        "multi-device",
+        "architecture"
+      ],
+      "notes": "Hit during t-d47609 implementation: watcher.py uses a single watcher.db on the shared drive. When two devices run parse-all simultaneously, SQLite locks. Current workaround: WATCHER_DB=/tmp/local.db env var. Proper solution: each device maintains its own local DB (e.g. ~/.mlos/watcher.db), and watcher.py has a read layer that can query across both when doing sessions/activity queries. OR use WAL mode (sqlite journal_mode=WAL) which handles concurrent readers better — simpler fix. Evaluate WAL first, fall back to per-device DB if still problematic."
     }
   ]
 }
