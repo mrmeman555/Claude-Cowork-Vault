@@ -8,11 +8,14 @@ set -e
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 OPENCLAW_DIR="C:/Users/Erinh/Desktop/OpenClaw_Claude"
 
-# Detect python command
-if command -v python3 &>/dev/null; then
+# Detect python command — handle Windows Store alias interference
+if python3 --version &>/dev/null 2>&1; then
   PY=python3
-else
+elif python --version &>/dev/null 2>&1; then
   PY=python
+else
+  echo "Error: Python not found. Please ensure Python is installed."
+  exit 1
 fi
 
 # ─── COLORS ───────────────────────────────────────────────────────────────────
