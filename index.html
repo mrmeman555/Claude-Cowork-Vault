@@ -466,11 +466,166 @@ body {
   font-size: 13px;
 }
 
+/* ── Watcher ──────────────────────────────────────────── */
+.activity-item {
+  display: grid;
+  grid-template-columns: 140px 100px 120px 1fr;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  align-items: center;
+}
+.activity-item:hover { background: var(--bg-hover); }
+.activity-ts { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+.activity-type {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 2px 6px; border-radius: 3px;
+  display: inline-block; text-align: center;
+}
+.activity-type.create { color: var(--green); border: 1px solid var(--green-dim); }
+.activity-type.read { color: var(--cyan); border: 1px solid var(--cyan-dim); }
+.activity-type.modify { color: var(--yellow); border: 1px solid var(--yellow); }
+.activity-type.execute, .activity-type.run { color: var(--orange); border: 1px solid var(--orange); }
+.activity-type.plan { color: var(--magenta); border: 1px solid var(--magenta); }
+.activity-type.decide { color: #f472b6; border: 1px solid #f472b6; }
+.activity-type.query { color: var(--text-secondary); border: 1px solid var(--border-light); }
+.activity-type.delegate { color: #818cf8; border: 1px solid #818cf8; }
+.activity-type.git_commit, .activity-type.git_push, .activity-type.git_pull,
+.activity-type.git_clone, .activity-type.git_other { color: var(--red); border: 1px solid var(--red); }
+.activity-type.install { color: #fbbf24; border: 1px solid #fbbf24; }
+.activity-type.delete { color: var(--red); border: 1px solid var(--red); }
+.activity-type.other { color: var(--text-dim); border: 1px solid var(--border); }
+.activity-project { font-family: var(--font-mono); font-size: 12px; color: var(--cyan); }
+.activity-target { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.decision-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px; margin-bottom: 12px;
+}
+.decision-card:hover { border-color: var(--border-light); }
+.decision-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+.decision-q { color: var(--text-primary); margin-bottom: 6px; }
+.decision-a { color: var(--green); font-family: var(--font-mono); font-size: 13px; }
+
+.watcher-filters { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.watcher-filters select {
+  background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border);
+  padding: 6px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px; cursor: pointer;
+}
+.watcher-filters select:hover { border-color: var(--border-light); }
+.watcher-filters select:focus { outline: none; border-color: var(--cyan-dim); }
+
+.bar-chart { margin: 16px 0; }
+.bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.bar-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); width: 160px; text-align: right; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { flex: 1; height: 20px; background: var(--bg-primary); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; display: flex; align-items: center; padding-left: 8px; }
+.bar-fill span { font-family: var(--font-mono); font-size: 10px; color: var(--bg-primary); font-weight: 600; }
+
+/* ── Operations Panel ─────────────────────────────────── */
+.ops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.ops-category-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  margin: 20px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.ops-category-label:first-child { margin-top: 0; }
+
+.ops-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ops-btn:hover { border-color: var(--cyan-dim); background: var(--bg-hover); }
+.ops-btn:active { background: var(--bg-active); }
+.ops-btn.running { border-color: var(--yellow); opacity: 0.7; cursor: wait; }
+.ops-btn.success { border-color: var(--green); }
+.ops-btn.error { border-color: var(--red); }
+
+.ops-btn-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.ops-btn-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.ops-output {
+  margin-top: 20px;
+}
+.ops-output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px 8px 0 0;
+}
+.ops-output-title {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.ops-output-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+.ops-output-status.ok { color: var(--green); border: 1px solid var(--green-dim); }
+.ops-output-status.fail { color: var(--red); border: 1px solid var(--red); }
+.ops-output-status.running { color: var(--yellow); border: 1px solid var(--yellow); }
+.ops-output-body {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 16px;
+  max-height: 400px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: var(--text-secondary);
+}
+
 /* ── Scrollbar ─────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ── Sessions ──────────────────────────────────────────── */
+.section-header { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 0 4px; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-family: var(--font-mono); background: var(--bg-active); color: var(--cyan); }
 </style>
 </head>
 <body>
@@ -502,10 +657,44 @@ body {
         <span class="sidebar-name">Tasks</span>
         <span class="sidebar-count" id="sidebar-task-count"></span>
       </div>
+      <div class="sidebar-item" data-view="operations">
+        <span class="sidebar-icon">⚡</span>
+        <span class="sidebar-name">Operations</span>
+      </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Projects</div>
       <div id="sidebar-projects"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Sessions</div>
+      <div class="sidebar-item" data-view="sessions">
+        <span class="sidebar-icon">⑂</span>
+        <span class="sidebar-name">Sessions</span>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Watcher</div>
+      <div class="sidebar-item" data-view="watcher-overview">
+        <span class="sidebar-icon">⊙</span>
+        <span class="sidebar-name">Watcher</span>
+      </div>
+      <div class="sidebar-item" data-view="watcher-activity">
+        <span class="sidebar-icon">▸</span>
+        <span class="sidebar-name">Activity</span>
+      </div>
+      <div class="sidebar-item" data-view="watcher-files">
+        <span class="sidebar-icon">◈</span>
+        <span class="sidebar-name">File Map</span>
+      </div>
+      <div class="sidebar-item" data-view="watcher-decisions">
+        <span class="sidebar-icon">◇</span>
+        <span class="sidebar-name">Decisions</span>
+      </div>
+      <div class="sidebar-item" data-view="watcher-git">
+        <span class="sidebar-icon">⎇</span>
+        <span class="sidebar-name">Git Ops</span>
+      </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">System</div>
@@ -533,6 +722,7 @@ let state = {
   tree: null,
   projects: null,
   tasksData: null,
+  watcher: { stats: null, sessions: null, activity: null, files: null, decisions: null, gitOps: null, toolBreakdown: null, projectBreakdown: null },
   currentView: 'overview',
   currentProject: null,
   viewingFile: null,
@@ -541,27 +731,55 @@ let state = {
 // ── API ─────────────────────────────────────────────────
 async function api(endpoint) {
   const res = await fetch(`/api/${endpoint}`);
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`API ${endpoint}: ${res.status} ${text.substring(0, 200)}`);
+  }
   return res.json();
 }
 
 async function loadData() {
-  const [index, projects, tree, tasks] = await Promise.all([
-    api('index'),
-    api('projects'),
-    api('tree'),
-    api('tasks'),
-  ]);
-  state.index = index;
-  state.projects = projects;
-  state.tree = tree;
-  state.tasksData = tasks;
-  updateHeader();
-  renderSidebar();
-  renderView();
-  // Update sidebar task count
-  const openTasks = (tasks || []).filter(t => t.status !== 'done' && t.status !== 'dropped').length;
-  const el = document.getElementById('sidebar-task-count');
-  if (el) el.textContent = openTasks || '';
+  try {
+    // Load core vault data first (these should always work)
+    const [index, projects, tree, tasks] = await Promise.all([
+      api('index').catch(() => ({ version: '1.0', items: [] })),
+      api('projects').catch(() => []),
+      api('tree').catch(() => ({})),
+      api('tasks').catch(() => []),
+    ]);
+    state.index = index;
+    state.projects = projects || [];
+    state.tree = tree;
+    state.tasksData = tasks;
+
+    // Load watcher stats separately (may not be available)
+    try {
+      state.watcher.stats = await api('watcher/stats');
+    } catch (e) {
+      state.watcher.stats = { available: false };
+      console.warn('Watcher DB not available:', e);
+    }
+
+    updateHeader();
+    renderSidebar();
+    renderView();
+
+    // Update sidebar task count
+    const openTasks = (tasks || []).filter(t => t.status !== 'done' && t.status !== 'dropped').length;
+    const el = document.getElementById('sidebar-task-count');
+    if (el) el.textContent = openTasks || '';
+  } catch (err) {
+    console.error('Failed to load data:', err);
+    document.getElementById('main').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">⚠</div>
+        <div class="empty-state-text">Failed to connect to the API.<br>${escapeHtml(err.message)}</div>
+      </div>`;
+  }
+}
+
+async function loadWatcherData(endpoint) {
+  return api(`watcher/${endpoint}`);
 }
 
 // ── Header ──────────────────────────────────────────────
@@ -579,7 +797,7 @@ function updateHeader() {
 function renderSidebar() {
   const container = document.getElementById('sidebar-projects');
   container.innerHTML = '';
-  for (const p of state.projects) {
+  for (const p of (state.projects || [])) {
     const div = document.createElement('div');
     div.className = 'sidebar-item';
     div.dataset.view = 'project';
@@ -624,7 +842,14 @@ function renderView() {
     case 'overview': renderOverview(main); break;
     case 'project': renderProject(main); break;
     case 'tasks': renderTasks(main); break;
+    case 'operations': renderOperations(main); break;
     case 'index-raw': renderRawIndex(main); break;
+    case 'sessions': renderSessions(main); break;
+    case 'watcher-overview': renderWatcherOverview(main); break;
+    case 'watcher-activity': renderWatcherActivity(main); break;
+    case 'watcher-files': renderWatcherFiles(main); break;
+    case 'watcher-decisions': renderWatcherDecisions(main); break;
+    case 'watcher-git': renderWatcherGit(main); break;
   }
 }
 
@@ -972,6 +1197,416 @@ function humanSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+// ── Operations Panel ───────────────────────────────────
+
+async function renderOperations(main) {
+  // Load the operation registry from the API
+  const ops = await api('ops/list');
+
+  // Group by category
+  const categories = {};
+  const categoryOrder = ['watcher', 'vault', 'git'];
+  const categoryLabels = { watcher: 'Watcher', vault: 'Vault', git: 'Git' };
+
+  for (const op of ops) {
+    const cat = op.category || 'other';
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(op);
+  }
+
+  let html = `
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Operations</div>
+        <div class="panel-subtitle">Click any operation to run it. Output appears below.</div>
+      </div>
+    </div>
+  `;
+
+  for (const cat of categoryOrder) {
+    if (!categories[cat]) continue;
+    html += `<div class="ops-category-label">${categoryLabels[cat] || cat}</div>`;
+    html += `<div class="ops-grid">`;
+    for (const op of categories[cat]) {
+      html += `
+        <button class="ops-btn" data-op-id="${op.id}" title="${escapeHtml(op.description)}">
+          <span class="ops-btn-label">${escapeHtml(op.label)}</span>
+          <span class="ops-btn-desc">${escapeHtml(op.description)}</span>
+        </button>
+      `;
+    }
+    html += `</div>`;
+  }
+
+  html += `<div id="ops-output-area"></div>`;
+
+  main.innerHTML = html;
+
+  // Bind click handlers
+  main.querySelectorAll('.ops-btn').forEach(btn => {
+    btn.addEventListener('click', () => runOperation(btn.dataset.opId, btn));
+  });
+}
+
+async function runOperation(opId, btnEl) {
+  // Prevent double-click
+  if (btnEl.classList.contains('running')) return;
+
+  // Reset all button states
+  document.querySelectorAll('.ops-btn').forEach(b => {
+    b.classList.remove('success', 'error');
+  });
+
+  // Mark as running
+  btnEl.classList.add('running');
+  const label = btnEl.querySelector('.ops-btn-label').textContent;
+
+  // Show loading in output area
+  const outputArea = document.getElementById('ops-output-area');
+  outputArea.innerHTML = `
+    <div class="ops-output">
+      <div class="ops-output-header">
+        <span class="ops-output-title">${escapeHtml(label)}</span>
+        <span class="ops-output-status running">running...</span>
+      </div>
+      <div class="ops-output-body" style="color:var(--text-dim);">Executing...</div>
+    </div>
+  `;
+
+  try {
+    const res = await fetch('/api/ops/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: opId }),
+    });
+    const data = await res.json();
+
+    btnEl.classList.remove('running');
+    btnEl.classList.add(data.ok ? 'success' : 'error');
+
+    const output = (data.stdout || '') + (data.stderr ? '\n--- stderr ---\n' + data.stderr : '');
+    const statusClass = data.ok ? 'ok' : 'fail';
+    const statusText = data.ok ? `exit 0` : `exit ${data.code}`;
+
+    outputArea.innerHTML = `
+      <div class="ops-output">
+        <div class="ops-output-header">
+          <span class="ops-output-title">${escapeHtml(label)}</span>
+          <span class="ops-output-status ${statusClass}">${statusText}</span>
+        </div>
+        <div class="ops-output-body">${escapeHtml(output.trim() || '(no output)')}</div>
+      </div>
+    `;
+  } catch (err) {
+    btnEl.classList.remove('running');
+    btnEl.classList.add('error');
+    outputArea.innerHTML = `
+      <div class="ops-output">
+        <div class="ops-output-header">
+          <span class="ops-output-title">${escapeHtml(label)}</span>
+          <span class="ops-output-status fail">error</span>
+        </div>
+        <div class="ops-output-body" style="color:var(--red);">${escapeHtml(err.message)}</div>
+      </div>
+    `;
+  }
+}
+
+// ── Watcher Views ──────────────────────────────────────
+
+// ── Sessions ────────────────────────────────────────────
+async function renderSessions(main) {
+  main.innerHTML = '<div class="view-header"><h2>Sessions</h2><p class="view-subtitle">Open and merged session branches</p></div><div class="loading">Loading sessions...</div>';
+
+  try {
+    const res = await fetch('/api/sessions');
+    const data = await res.json();
+
+    let html = '<div class="view-header"><h2>Sessions</h2><p class="view-subtitle">Git branch session tracking across OpenClaw_Claude</p></div>';
+
+    // Open sessions
+    html += '<div class="section-header">Open Sessions</div>';
+    if (data.open && data.open.length > 0) {
+      html += '<table class="data-table"><thead><tr><th>Branch</th><th>Project</th><th>Created</th><th>Chats</th><th>Status</th></tr></thead><tbody>';
+      for (const s of data.open) {
+        html += `<tr>
+          <td style="font-family:var(--font-mono);font-size:12px">${escapeHtml(s.branch)}</td>
+          <td><span class="tag">${escapeHtml(s.project)}</span></td>
+          <td>${escapeHtml(s.created)}</td>
+          <td>${s.chats || 0}</td>
+          <td><span class="status-badge open">OPEN</span></td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+    } else {
+      html += '<p style="color:var(--text-dim);padding:12px">No open sessions.</p>';
+    }
+
+    // Merged sessions
+    html += '<div class="section-header" style="margin-top:24px">Merged Sessions</div>';
+    if (data.merged && data.merged.length > 0) {
+      html += '<table class="data-table"><thead><tr><th>Commit</th><th>Project</th><th>Merged</th><th>Status</th></tr></thead><tbody>';
+      for (const s of data.merged) {
+        html += `<tr>
+          <td style="font-family:var(--font-mono);font-size:12px">${escapeHtml(s.branch)}</td>
+          <td><span class="tag">${escapeHtml(s.project)}</span></td>
+          <td>${escapeHtml(s.merged)}</td>
+          <td><span class="status-badge done">MERGED</span></td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+    } else {
+      html += '<p style="color:var(--text-dim);padding:12px">No merged sessions yet.</p>';
+    }
+
+    main.innerHTML = html;
+  } catch (e) {
+    main.innerHTML = '<div class="view-header"><h2>Sessions</h2></div><p style="color:var(--red);padding:20px">Failed to load sessions: ' + escapeHtml(e.message) + '</p>';
+  }
+}
+
+async function renderWatcherOverview(main) {
+  const stats = state.watcher.stats || {};
+  if (!stats.available) {
+    main.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⊙</div><div class="empty-state-text">Watcher DB not available.<br>Run: python .mlos/watcher/scan.py<br>or use the Operations panel.</div></div>`;
+    return;
+  }
+
+  // Load breakdowns
+  let toolBD, projBD, sessions;
+  try {
+    [toolBD, projBD, sessions] = await Promise.all([
+      loadWatcherData('tool-breakdown'),
+      loadWatcherData('project-breakdown'),
+      loadWatcherData('sessions'),
+    ]);
+  } catch (e) {
+    main.innerHTML = `<div class="panel-header"><div><div class="panel-title">Context Watcher</div><div class="panel-subtitle">Error loading watcher data</div></div></div><div class="empty-state"><div class="empty-state-text">${escapeHtml(e.message)}</div></div>`;
+    return;
+  }
+  state.watcher.toolBreakdown = toolBD;
+  state.watcher.projectBreakdown = projBD;
+  state.watcher.sessions = sessions;
+
+  const maxTool = toolBD.length ? Math.max(...toolBD.map(t => t.count)) : 1;
+  const maxProj = projBD.length ? Math.max(...projBD.map(p => p.count)) : 1;
+
+  const toolBars = toolBD.slice(0, 12).map(t => {
+    const pct = Math.round((t.count / maxTool) * 100);
+    const short = t.tool_name.replace('mcp__Claude_Preview__preview_', 'preview:');
+    return `<div class="bar-row"><div class="bar-label" title="${t.tool_name}">${short}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:var(--cyan)"><span>${t.count}</span></div></div></div>`;
+  }).join('');
+
+  const projBars = projBD.map(p => {
+    const pct = Math.round((p.count / maxProj) * 100);
+    return `<div class="bar-row"><div class="bar-label">${p.project}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:var(--green)"><span>${p.count}</span></div></div></div>`;
+  }).join('');
+
+  const sessionRows = sessions.map(s => {
+    const short = (s.id || '').substring(0, 12) + '...';
+    const cwd = (s.cwd || '').split(/[/\\]/).pop();
+    const started = (s.started_at || '').substring(0, 16).replace('T', ' ');
+    return `<tr><td class="file-id" title="${s.id}">${short}</td><td class="file-name">${cwd}</td><td>${started}</td><td class="file-size">${s.message_count}</td><td class="file-size">${s.tool_use_count}</td></tr>`;
+  }).join('');
+
+  main.innerHTML = `
+    <div class="panel-header">
+      <div><div class="panel-title">Context Watcher</div><div class="panel-subtitle">Programmatic inference from structured transcripts</div></div>
+    </div>
+    <div class="overview-cards">
+      <div class="card"><div class="card-label">Sessions</div><div class="card-value green">${stats.sessions}</div></div>
+      <div class="card"><div class="card-label">Messages</div><div class="card-value cyan">${stats.messages}</div></div>
+      <div class="card"><div class="card-label">Tool Uses</div><div class="card-value yellow">${stats.tool_uses}</div></div>
+      <div class="card"><div class="card-label">Files Tracked</div><div class="card-value magenta">${stats.files}</div></div>
+    </div>
+    <div class="overview-cards">
+      <div class="card"><div class="card-label">Decisions</div><div class="card-value" style="color:var(--orange)">${stats.decisions}</div></div>
+      <div class="card"><div class="card-label">Git Ops</div><div class="card-value" style="color:var(--red)">${stats.git_ops}</div></div>
+      <div class="card"><div class="card-label">Activities</div><div class="card-value" style="color:var(--cyan)">${stats.activities}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px;">
+      <div class="card"><div class="card-label" style="margin-bottom:12px">Tool Usage</div><div class="bar-chart">${toolBars}</div></div>
+      <div class="card"><div class="card-label" style="margin-bottom:12px">Activity by Project</div><div class="bar-chart">${projBars}</div></div>
+    </div>
+    <div style="margin-top:24px;">
+      <div class="panel-header"><div class="panel-title">Sessions</div></div>
+      <table class="file-table"><thead><tr><th>ID</th><th>Workspace</th><th>Started</th><th>Messages</th><th>Tools</th></tr></thead><tbody>${sessionRows}</tbody></table>
+    </div>
+  `;
+}
+
+async function renderWatcherActivity(main) {
+  main.innerHTML = `<div class="panel-header"><div><div class="panel-title">Activity Timeline</div><div class="panel-subtitle">Loading...</div></div></div>`;
+
+  let activity, projBD;
+  try {
+    [activity, projBD] = await Promise.all([
+      loadWatcherData('activity?limit=200'),
+      state.watcher.projectBreakdown || loadWatcherData('project-breakdown'),
+    ]);
+  } catch (e) {
+    main.innerHTML = `<div class="panel-header"><div><div class="panel-title">Activity Timeline</div><div class="panel-subtitle">Error loading data</div></div></div><div class="empty-state"><div class="empty-state-text">${escapeHtml(e.message)}</div></div>`;
+    return;
+  }
+  state.watcher.activity = activity;
+
+  const projects = [...new Set(activity.map(a => a.project).filter(Boolean))].sort();
+  const types = [...new Set(activity.map(a => a.type).filter(Boolean))].sort();
+
+  function renderActivityList(items) {
+    if (!items.length) return '<div class="empty-state"><div class="empty-state-text">No activity found.</div></div>';
+    return items.map(a => {
+      const ts = (a.timestamp || '').substring(11, 19);
+      const date = (a.timestamp || '').substring(0, 10);
+      let target = a.target || '';
+      // Shorten file paths
+      target = target.replace(/C:[/\\]Users[/\\]Erinh[/\\]Desktop[/\\]/g, '');
+      if (target.length > 70) target = '...' + target.slice(-67);
+      return `<div class="activity-item">
+        <span class="activity-ts" title="${a.timestamp}">${date} ${ts}</span>
+        <span class="activity-type ${a.type}">${a.type}</span>
+        <span class="activity-project">${a.project || '—'}</span>
+        <span class="activity-target" title="${escapeHtml(a.target || '')}">${escapeHtml(target)}</span>
+      </div>`;
+    }).join('');
+  }
+
+  main.innerHTML = `
+    <div class="panel-header"><div><div class="panel-title">Activity Timeline</div><div class="panel-subtitle">${activity.length} events (most recent first)</div></div></div>
+    <div class="watcher-filters">
+      <select id="w-filter-project"><option value="">All Projects</option>${projects.map(p => `<option value="${p}">${p}</option>`).join('')}</select>
+      <select id="w-filter-type"><option value="">All Types</option>${types.map(t => `<option value="${t}">${t}</option>`).join('')}</select>
+    </div>
+    <div id="activity-list" style="max-height:calc(100vh - 240px);overflow-y:auto;">
+      ${renderActivityList(activity)}
+    </div>
+  `;
+
+  ['w-filter-project', 'w-filter-type'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => {
+      const pv = document.getElementById('w-filter-project').value;
+      const tv = document.getElementById('w-filter-type').value;
+      let filtered = activity;
+      if (pv) filtered = filtered.filter(a => a.project === pv);
+      if (tv) filtered = filtered.filter(a => a.type === tv);
+      document.getElementById('activity-list').innerHTML = renderActivityList(filtered);
+    });
+  });
+}
+
+async function renderWatcherFiles(main) {
+  main.innerHTML = `<div class="panel-header"><div><div class="panel-title">File Map</div><div class="panel-subtitle">Loading...</div></div></div>`;
+
+  let files;
+  try { files = await loadWatcherData('files'); } catch (e) {
+    main.innerHTML = `<div class="panel-header"><div><div class="panel-title">File Map</div></div></div><div class="empty-state"><div class="empty-state-text">Error: ${escapeHtml(e.message)}</div></div>`;
+    return;
+  }
+  state.watcher.files = files;
+
+  const projects = [...new Set(files.map(f => f.project).filter(Boolean))].sort();
+
+  function renderFileList(items) {
+    if (!items.length) return '<div class="empty-state"><div class="empty-state-text">No files tracked.</div></div>';
+    const rows = items.map(f => {
+      let p = f.path || '';
+      p = p.replace(/C:[/\\]Users[/\\]Erinh[/\\]Desktop[/\\]/g, '');
+      if (p.length > 70) p = '...' + p.slice(-67);
+      const total = (f.read_count || 0) + (f.write_count || 0) + (f.edit_count || 0);
+      return `<tr>
+        <td class="file-name" title="${escapeHtml(f.path || '')}">${escapeHtml(p)}</td>
+        <td><span class="activity-project">${f.project || '—'}</span></td>
+        <td class="file-size">${f.read_count || 0}</td>
+        <td class="file-size">${f.write_count || 0}</td>
+        <td class="file-size">${f.edit_count || 0}</td>
+        <td class="file-size" style="color:var(--text-primary);font-weight:600;">${total}</td>
+      </tr>`;
+    }).join('');
+    return `<table class="file-table"><thead><tr><th>Path</th><th>Project</th><th>Reads</th><th>Writes</th><th>Edits</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
+  main.innerHTML = `
+    <div class="panel-header"><div><div class="panel-title">File Map</div><div class="panel-subtitle">${files.length} unique files across sessions</div></div></div>
+    <div class="watcher-filters">
+      <select id="wf-filter-project"><option value="">All Projects</option>${projects.map(p => `<option value="${p}">${p}</option>`).join('')}</select>
+    </div>
+    <div id="file-list">${renderFileList(files)}</div>
+  `;
+
+  document.getElementById('wf-filter-project').addEventListener('change', () => {
+    const pv = document.getElementById('wf-filter-project').value;
+    let filtered = files;
+    if (pv) filtered = filtered.filter(f => f.project === pv);
+    document.getElementById('file-list').innerHTML = renderFileList(filtered);
+  });
+}
+
+async function renderWatcherDecisions(main) {
+  main.innerHTML = `<div class="panel-header"><div><div class="panel-title">Decisions</div><div class="panel-subtitle">Loading...</div></div></div>`;
+
+  let decisions;
+  try { decisions = await loadWatcherData('decisions'); } catch (e) {
+    main.innerHTML = `<div class="panel-header"><div><div class="panel-title">Decisions</div></div></div><div class="empty-state"><div class="empty-state-text">Error: ${escapeHtml(e.message)}</div></div>`;
+    return;
+  }
+  state.watcher.decisions = decisions;
+
+  const cards = decisions.length ? decisions.map(d => {
+    const ts = (d.timestamp || '').substring(0, 16).replace('T', ' ');
+    return `<div class="decision-card">
+      <div class="decision-meta">${ts} · ${d.project || '—'}</div>
+      <div class="decision-q">${escapeHtml(d.question || '(no question)')}</div>
+      <div class="decision-a">${d.answer ? '→ ' + escapeHtml(d.answer) : '<span style="color:var(--text-dim)">(no answer captured)</span>'}</div>
+    </div>`;
+  }).join('') : '<div class="empty-state"><div class="empty-state-text">No decisions recorded.</div></div>';
+
+  main.innerHTML = `
+    <div class="panel-header"><div><div class="panel-title">Decisions</div><div class="panel-subtitle">${decisions.length} decision points extracted from AskUserQuestion tool calls</div></div></div>
+    <div style="max-height:calc(100vh - 180px);overflow-y:auto;">${cards}</div>
+  `;
+}
+
+async function renderWatcherGit(main) {
+  main.innerHTML = `<div class="panel-header"><div><div class="panel-title">Git Operations</div><div class="panel-subtitle">Loading...</div></div></div>`;
+
+  let gitOps;
+  try { gitOps = await loadWatcherData('git-ops'); } catch (e) {
+    main.innerHTML = `<div class="panel-header"><div><div class="panel-title">Git Operations</div></div></div><div class="empty-state"><div class="empty-state-text">Error: ${escapeHtml(e.message)}</div></div>`;
+    return;
+  }
+  state.watcher.gitOps = gitOps;
+
+  if (!gitOps.length) {
+    main.innerHTML = `<div class="panel-header"><div><div class="panel-title">Git Operations</div></div></div><div class="empty-state"><div class="empty-state-text">No git operations recorded.</div></div>`;
+    return;
+  }
+
+  const opColors = {
+    commit: 'var(--green)', push: 'var(--cyan)', pull: 'var(--yellow)',
+    clone: 'var(--magenta)', checkout: 'var(--orange)', branch: 'var(--orange)',
+    merge: 'var(--red)', add: 'var(--text-secondary)', status: 'var(--text-dim)',
+    diff: 'var(--text-dim)', log: 'var(--text-dim)', remote: 'var(--text-dim)', init: 'var(--magenta)',
+  };
+
+  const rows = gitOps.map(g => {
+    const ts = (g.timestamp || '').substring(0, 16).replace('T', ' ');
+    const color = opColors[g.operation] || 'var(--text-secondary)';
+    let detail = g.detail || '';
+    if (detail.length > 60) detail = detail.substring(0, 57) + '...';
+    return `<tr>
+      <td class="activity-ts">${ts}</td>
+      <td style="font-family:var(--font-mono);font-size:12px;color:${color};font-weight:600;">${g.operation}</td>
+      <td class="activity-project">${g.project || '—'}</td>
+      <td class="file-size" title="${escapeHtml(g.detail || '')}">${escapeHtml(detail)}</td>
+    </tr>`;
+  }).join('');
+
+  main.innerHTML = `
+    <div class="panel-header"><div><div class="panel-title">Git Operations</div><div class="panel-subtitle">${gitOps.length} operations across sessions</div></div></div>
+    <table class="file-table"><thead><tr><th>Time</th><th>Operation</th><th>Project</th><th>Detail</th></tr></thead><tbody>${rows}</tbody></table>
+  `;
+}
+
 // ── Sidebar click handlers ──────────────────────────────
 document.querySelectorAll('.sidebar-item[data-view="overview"]').forEach(el => {
   el.addEventListener('click', () => navigateTo('overview'));
@@ -979,8 +1614,19 @@ document.querySelectorAll('.sidebar-item[data-view="overview"]').forEach(el => {
 document.querySelectorAll('.sidebar-item[data-view="tasks"]').forEach(el => {
   el.addEventListener('click', () => navigateTo('tasks'));
 });
+document.querySelectorAll('.sidebar-item[data-view="operations"]').forEach(el => {
+  el.addEventListener('click', () => navigateTo('operations'));
+});
 document.querySelectorAll('.sidebar-item[data-view="index-raw"]').forEach(el => {
   el.addEventListener('click', () => navigateTo('index-raw'));
+});
+document.querySelectorAll('.sidebar-item[data-view="sessions"]').forEach(el => {
+  el.addEventListener('click', () => navigateTo('sessions'));
+});
+['watcher-overview', 'watcher-activity', 'watcher-files', 'watcher-decisions', 'watcher-git'].forEach(view => {
+  document.querySelectorAll(`.sidebar-item[data-view="${view}"]`).forEach(el => {
+    el.addEventListener('click', () => navigateTo(view));
+  });
 });
 
 // ── Init ────────────────────────────────────────────────
