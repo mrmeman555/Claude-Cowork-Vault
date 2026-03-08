@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T21:25:53+00:00",
+  "last_updated": "2026-03-08T21:29:29+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -364,6 +364,40 @@
         "architecture"
       ],
       "notes": "Hit during t-d47609 implementation: watcher.py uses a single watcher.db on the shared drive. When two devices run parse-all simultaneously, SQLite locks. Current workaround: WATCHER_DB=/tmp/local.db env var. Proper solution: each device maintains its own local DB (e.g. ~/.mlos/watcher.db), and watcher.py has a read layer that can query across both when doing sessions/activity queries. OR use WAL mode (sqlite journal_mode=WAL) which handles concurrent readers better — simpler fix. Evaluate WAL first, fall back to per-device DB if still problematic."
+    },
+    {
+      "id": "t-17a04a",
+      "title": "Add completion_steps field to task schema — enforce commit+push+close on every task",
+      "status": "open",
+      "priority": "medium",
+      "type": "task",
+      "created": "2026-03-08T21:29:29+00:00",
+      "updated": "2026-03-08T21:29:29+00:00",
+      "tags": [
+        "tasks",
+        "schema",
+        "agent-behavior",
+        "protocol"
+      ],
+      "notes": "Problem: agents complete implementation work but don't commit, push, or mark tasks done. They treat 'working locally' as done. Fix: add a mandatory completion_steps block to the task notes template. Every task that touches files must include: git add -A && git commit -m 'feat: t-XXXX — description' && git push && python3 .mlos/ingest.py task update --id t-XXXX --status done. Also update CLAUDE.md task execution protocol to say: a task is not done until committed, pushed, and marked done in vault. Consider adding completion_steps as a first-class field in tasks.json schema so ingest.py can surface it automatically when an agent picks up a task."
+    },
+    {
+      "id": "t-2383a6",
+      "title": "Custom git merge driver for events.jsonl and tasks.json — stop recurring rebase conflicts",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-08T21:29:29+00:00",
+      "updated": "2026-03-08T21:29:29+00:00",
+      "tags": [
+        "git",
+        "merge",
+        "conflicts",
+        "architecture",
+        "events",
+        "tasks"
+      ],
+      "notes": "Root cause: both agents append to events.jsonl and tasks.json independently. Git sees two diverged versions and conflicts every time. Current workaround: agent takes --theirs, which silently drops local changes. This is dangerous for an events log. Fix: implement a custom git merge driver that knows the semantics of each file. For events.jsonl: merge driver should concatenate all entries from both sides, deduplicate by event ID/timestamp, and sort chronologically. For tasks.json: merge driver should merge by task ID — if same task modified on both sides, take the newer updated timestamp. Implementation: 1) Write a Python merge script (.mlos/merge-driver.py) that handles both files. 2) Register in .gitattributes: .mlos/events.jsonl merge=mlos-append and vault/mlos-dev/tasks.json merge=mlos-tasks. 3) Register driver in .git/config: [merge 'mlos-append'] driver = python3 .mlos/merge-driver.py %O %A %B. This eliminates the recurring conflict entirely without requiring agent coordination."
     }
   ]
 }

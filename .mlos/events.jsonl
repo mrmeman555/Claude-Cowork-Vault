@@ -30,3 +30,5 @@
 {"timestamp": "2026-03-08T20:46:03+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-d47609", "title": "Centralize Claude Code transcripts from all devices to shared drive for unified watcher ingestion", "type": "task"}
 {"timestamp": "2026-03-08T21:15:40+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-efb140", "title": "Agent booted with stale vault — Claude-Cowork-Vault pull not happening at boot", "type": "task"}
 {"timestamp": "2026-03-08T21:25:53+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-6e4c24", "title": "SQLite watcher.db locking on shared drive — needs per-device local DB + merge layer", "type": "task"}
+{"timestamp": "2026-03-08T21:29:29+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-17a04a", "title": "Add completion_steps field to task schema — enforce commit+push+close on every task", "type": "task"}
+{"timestamp": "2026-03-08T21:29:29+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-2383a6", "title": "Custom git merge driver for events.jsonl and tasks.json — stop recurring rebase conflicts", "type": "task"}
