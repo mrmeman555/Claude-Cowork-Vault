@@ -28,3 +28,4 @@
 {"timestamp": "2026-03-08T20:37:54+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-cfb705", "title": "Explore Gemini + Google tools integration for large-context and cheap inference use cases", "type": "idea"}
 {"timestamp": "2026-03-08T20:40:20+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-4e6704", "title": "Implement per-turn repo freshness check across all agents", "type": "task"}
 {"timestamp": "2026-03-08T20:46:03+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-d47609", "title": "Centralize Claude Code transcripts from all devices to shared drive for unified watcher ingestion", "type": "task"}
+{"timestamp": "2026-03-08T21:15:40+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-efb140", "title": "Agent booted with stale vault — Claude-Cowork-Vault pull not happening at boot", "type": "task"}
