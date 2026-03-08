@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T02:30:26+00:00",
+  "last_updated": "2026-03-08T02:43:28.310838+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -9,12 +9,14 @@
       "priority": "high",
       "type": "task",
       "created": "2026-03-06T00:05:22+00:00",
-      "updated": "2026-03-06T00:07:56+00:00",
+      "updated": "2026-03-08T02:43:28.310824+00:00",
       "tags": [
         "context-rot",
-        "vault-system"
+        "vault-system",
+        "generated-context",
+        "api"
       ],
-      "notes": "decisions.md, session-history.md, pickup.md rot between sessions — replace with maintainable alternatives"
+      "notes": "decisions.md, session-history.md, pickup.md rot between sessions \u2014 replace with maintainable alternatives. EXTENDED: The vault project view currently stores static agent-written files (project-state.md, decisions.md, session-history.md, pickup.md). These should NOT be stored documents \u2014 they should be generated on-demand from live sources of truth: tasks.json, git log, watcher.db, session branches. Solution: GET /api/project/{name}/context endpoint that assembles a fresh snapshot at query time. Permanent artifacts (case studies, design docs, real work products) stay as files. System state summaries are never stored \u2014 always generated."
     },
     {
       "id": "t-8bb55a",
@@ -56,7 +58,7 @@
         "mcp",
         "integration"
       ],
-      "notes": "Look into MCP (Model Context Protocol) servers — could provide structured tool access to vault operations, task tracking, and context loading for any Claude interface."
+      "notes": "Look into MCP (Model Context Protocol) servers \u2014 could provide structured tool access to vault operations, task tracking, and context loading for any Claude interface."
     },
     {
       "id": "t-f79cdc",
@@ -70,7 +72,7 @@
         "agents",
         "automation"
       ],
-      "notes": "Investigate Claude Code sub-agents and Agent SDK for automating vault operations — potential path for Tier 2 watcher agents, context maintenance, and multi-step workflows."
+      "notes": "Investigate Claude Code sub-agents and Agent SDK for automating vault operations \u2014 potential path for Tier 2 watcher agents, context maintenance, and multi-step workflows."
     },
     {
       "id": "t-b7e972",
@@ -116,11 +118,11 @@
         "context-packs",
         "tooling"
       ],
-      "notes": "CLI-first, not UI-first. Any agent should be able to compose context packs via commands — select kernel, schema, scenario, attach vault sources, stamp with provenance, output a deployable seed prompt. The web UI is secondary. Priority: (1) CLI compose toolchain (2) API endpoints for remote agents (3) Optional web composer. The created agent's context pack should reference the transcript/session where it was designed. Ties to t-fa0b53 (provenance) and t-b7e972 (session tracking)."
+      "notes": "CLI-first, not UI-first. Any agent should be able to compose context packs via commands \u2014 select kernel, schema, scenario, attach vault sources, stamp with provenance, output a deployable seed prompt. The web UI is secondary. Priority: (1) CLI compose toolchain (2) API endpoints for remote agents (3) Optional web composer. The created agent's context pack should reference the transcript/session where it was designed. Ties to t-fa0b53 (provenance) and t-b7e972 (session tracking)."
     },
     {
       "id": "t-50fea1",
-      "title": "Design context pack generator — grounding prompt factory for domain-specific agent environments",
+      "title": "Design context pack generator \u2014 grounding prompt factory for domain-specific agent environments",
       "status": "open",
       "priority": "high",
       "type": "task",
@@ -149,7 +151,7 @@
       "created": "2026-03-08T02:30:26+00:00",
       "updated": "2026-03-08T02:30:26+00:00",
       "tags": [],
-      "notes": "Add created_from (session branch or chat URL) and agent_id (e.g. 'cloud-agent', 'code-agent', 'operator') to tasks.json schema. Update ingest.py task add with optional --session and --agent flags. Backward compatible — existing tasks get null for new fields. Closes GAP-002 partially."
+      "notes": "Add created_from (session branch or chat URL) and agent_id (e.g. 'cloud-agent', 'code-agent', 'operator') to tasks.json schema. Update ingest.py task add with optional --session and --agent flags. Backward compatible \u2014 existing tasks get null for new fields. Closes GAP-002 partially."
     }
   ]
 }
