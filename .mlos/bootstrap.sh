@@ -203,16 +203,13 @@ echo -e "${AMBER}${BOLD}── OPEN TASKS ────────────�
 TASKS_FILE="$VAULT_DIR/$PROJECT/tasks.json"
 tasks_json=""
 
-if curl -s "${API_BASE}/tasks" -o /tmp/mlos_tasks.json 2>/dev/null; then
-  tasks_json=$(cat /tmp/mlos_tasks.json)
-fi
+tasks_json=$(curl -s "${API_BASE}/tasks" 2>/dev/null || true)
 
 if [ -n "$tasks_json" ] && echo "$tasks_json" | $PY -c "import sys,json; json.load(sys.stdin)" 2>/dev/null; then
-  # Use API response
-  $PY -c "
+  # Use API response — pipe via stdin to avoid MSYS path issues
+  echo "$tasks_json" | $PY -c "
 import json, sys
-with open('/tmp/mlos_tasks.json') as f:
-    tasks = json.load(f)
+tasks = json.load(sys.stdin)
 project_tasks = [t for t in tasks if t.get('project','') == '$PROJECT'
                  and t.get('status','') in ('open','in_progress')]
 if not project_tasks:
@@ -227,11 +224,10 @@ else:
         print(f'  {marker} [{pri}] {title}  {tid}')
 "
 elif [ -f "$TASKS_FILE" ]; then
-  # Fallback: read tasks.json directly
-  $PY -c "
-import json
-with open('$TASKS_FILE') as f:
-    data = json.load(f)
+  # Fallback: read tasks.json directly via stdin
+  cat "$TASKS_FILE" | $PY -c "
+import json, sys
+data = json.load(sys.stdin)
 tasks = data.get('tasks', [])
 open_tasks = [t for t in tasks if t.get('status') in ('open','in_progress')]
 if not open_tasks:
