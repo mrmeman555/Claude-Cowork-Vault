@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T21:29:29+00:00",
+  "last_updated": "2026-03-08T22:01:00+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -398,6 +398,20 @@
         "tasks"
       ],
       "notes": "Root cause: both agents append to events.jsonl and tasks.json independently. Git sees two diverged versions and conflicts every time. Current workaround: agent takes --theirs, which silently drops local changes. This is dangerous for an events log. Fix: implement a custom git merge driver that knows the semantics of each file. For events.jsonl: merge driver should concatenate all entries from both sides, deduplicate by event ID/timestamp, and sort chronologically. For tasks.json: merge driver should merge by task ID \u2014 if same task modified on both sides, take the newer updated timestamp. Implementation: 1) Write a Python merge script (.mlos/merge-driver.py) that handles both files. 2) Register in .gitattributes: .mlos/events.jsonl merge=mlos-append and vault/mlos-dev/tasks.json merge=mlos-tasks. 3) Register driver in .git/config: [merge 'mlos-append'] driver = python3 .mlos/merge-driver.py %O %A %B. This eliminates the recurring conflict entirely without requiring agent coordination.\n\n## Implementation (complete)\n- .mlos/merge-driver.py \u2014 Python merge script, handles both file types\n- .gitattributes \u2014 registers driver for events.jsonl and tasks.json\n\n## Each device must run once to register the driver in local git config:\n  cd /path/to/Home_Lab_2026\n  git config merge.mlos-events.driver \"python3 .mlos/merge-driver.py %O %A %B events\"\n  git config merge.mlos-events.name \"ML OS events.jsonl merge driver\"\n  git config merge.mlos-tasks.driver \"python3 .mlos/merge-driver.py %O %A %B tasks\"\n  git config merge.mlos-tasks.name \"ML OS tasks.json merge driver\"\n\nRun this on BOTH device-1 and device-2. The .gitattributes is committed\nso git knows which files use which driver \u2014 but the driver itself must be\nregistered in each device's local .git/config (not committed)."
+    },
+    {
+      "id": "t-test02",
+      "title": "TEST: merge driver validation \u2014 remote side",
+      "status": "open",
+      "priority": "low",
+      "type": "task",
+      "created": "2026-03-08T22:01:00+00:00",
+      "updated": "2026-03-08T22:01:00+00:00",
+      "tags": [
+        "test",
+        "merge-driver"
+      ],
+      "notes": "Test task created in temp clone to simulate remote conflict. Delete after test."
     }
   ]
 }
