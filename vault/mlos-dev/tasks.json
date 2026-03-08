@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T13:44:10+00:00",
+  "last_updated": "2026-03-08T14:00:00+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -251,18 +251,34 @@
     {
       "id": "t-674952",
       "title": "Refactor hardcoded paths to use MLOS_ROOT env var for multi-device support",
-      "status": "done",
+      "status": "in_progress",
       "priority": "high",
       "type": "task",
       "created": "2026-03-08T13:15:42+00:00",
-      "updated": "2026-03-08T13:44:10+00:00",
+      "updated": "2026-03-08T13:59:51.554274+00:00",
       "tags": [
         "paths",
         "multi-device",
         "env",
         "portability"
       ],
-      "notes": "All three Desktop paths are hardcoded across multiple files. DO THIS BEFORE moving folders to shared drive.\n\n## Current hardcoded values to replace\n- C:/Users/Erinh/Desktop/OpenClaw_Claude\n- C:/Users/Erinh/Desktop/Home_Lab_2026\n- C:/Users/Erinh/Desktop/ClaudeTest\n\n## Affected files (exact locations)\n1. OpenClaw_Claude/CLAUDE.md — lines 94-102: paths in linked workspaces table + CLI command examples\n2. OpenClaw_Claude/.claude/commands/setup-sync.md — line 20: Home_Lab_2026 path in git fetch command\n3. Home_Lab_2026/.mlos/bootstrap.sh — line 18: OPENCLAW_DIR=C:/Users/Erinh/Desktop/OpenClaw_Claude\n4. Home_Lab_2026/.mlos/session-close.sh — line 9: OPENCLAW_DIR, line 101: VAULT_DIR\n5. Home_Lab_2026/.mlos/watcher.py — lines 35-45: all three paths in project lookup table\n6. Home_Lab_2026/.mlos/ingest.py — lines 955, 989, 1004: ClaudeTest + Home_Lab_2026 paths\n\n## What to build\nCreate Home_Lab_2026/.env:\n  MLOS_ROOT=C:/Users/Erinh/Desktop\n  OPENCLAW_DIR=C:/Users/Erinh/Desktop/OpenClaw_Claude\n  VAULT_DIR=C:/Users/Erinh/Desktop/Home_Lab_2026/vault\n  CLAUDETEST_DIR=C:/Users/Erinh/Desktop/ClaudeTest\n\nUpdate all 6 files to read from .env instead of hardcoded values.\n- bash scripts: source .env at top\n- Python scripts: use python-dotenv or os.environ with fallback\nAdd .env to Home_Lab_2026/.gitignore so it stays device-local.\nUpdate CLAUDE.md linked workspaces table to say paths are device-local, defined in Home_Lab_2026/.env.\n\n## Acceptance criteria\n1. Run bootstrap.sh on the current machine — full session lifecycle completes without errors\n2. Manually change OPENCLAW_DIR in .env to a fake path — bootstrap.sh should fail with a clear error (not a cryptic one)\n3. Restore .env to correct values — bootstrap.sh works again\n4. Confirm .env does not appear in git status (gitignored)\n5. Confirm no remaining hardcoded Desktop paths: grep -r \"Erinh\" across all 6 files returns nothing"
+      "notes": "All three Desktop paths are hardcoded across multiple files. DO THIS BEFORE moving folders to shared drive.\n\n## Current hardcoded values to replace\n- C:/Users/Erinh/Desktop/OpenClaw_Claude\n- C:/Users/Erinh/Desktop/Home_Lab_2026\n- C:/Users/Erinh/Desktop/ClaudeTest\n\n## Affected files (exact locations)\n1. OpenClaw_Claude/CLAUDE.md — lines 94-102: paths in linked workspaces table + CLI command examples\n2. OpenClaw_Claude/.claude/commands/setup-sync.md — line 20: Home_Lab_2026 path in git fetch command\n3. Home_Lab_2026/.mlos/bootstrap.sh — line 18: OPENCLAW_DIR=C:/Users/Erinh/Desktop/OpenClaw_Claude\n4. Home_Lab_2026/.mlos/session-close.sh — line 9: OPENCLAW_DIR, line 101: VAULT_DIR\n5. Home_Lab_2026/.mlos/watcher.py — lines 35-45: all three paths in project lookup table\n6. Home_Lab_2026/.mlos/ingest.py — lines 955, 989, 1004: ClaudeTest + Home_Lab_2026 paths\n\n## What to build\nCreate Home_Lab_2026/.env:\n  MLOS_ROOT=C:/Users/Erinh/Desktop\n  OPENCLAW_DIR=C:/Users/Erinh/Desktop/OpenClaw_Claude\n  VAULT_DIR=C:/Users/Erinh/Desktop/Home_Lab_2026/vault\n  CLAUDETEST_DIR=C:/Users/Erinh/Desktop/ClaudeTest\n\nUpdate all 6 files to read from .env instead of hardcoded values.\n- bash scripts: source .env at top\n- Python scripts: use python-dotenv or os.environ with fallback\nAdd .env to Home_Lab_2026/.gitignore so it stays device-local.\nUpdate CLAUDE.md linked workspaces table to say paths are device-local, defined in Home_Lab_2026/.env.\n\n## Acceptance criteria\n1. Run bootstrap.sh on the current machine — full session lifecycle completes without errors\n2. Manually change OPENCLAW_DIR in .env to a fake path — bootstrap.sh should fail with a clear error (not a cryptic one)\n3. Restore .env to correct values — bootstrap.sh works again\n4. Confirm .env does not appear in git status (gitignored)\n5. Confirm no remaining hardcoded Desktop paths: grep -r \"Erinh\" across all 6 files returns nothing\n\nPROGRESS: Scripts refactored (Code agent), CLAUDE.md updated (cloud agent). BLOCKED: shared drive may have existing git repos that could collide with the move. Need to audit shared drive before proceeding with folder move."
+    },
+    {
+      "id": "t-6957e3",
+      "title": "Audit shared drive for existing git repos before folder migration",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-08T14:00:00+00:00",
+      "updated": "2026-03-08T14:00:00+00:00",
+      "tags": [
+        "shared-drive",
+        "git",
+        "migration",
+        "blocker"
+      ],
+      "notes": "BLOCKS t-674952 (folder move to shared drive). Shared drive may already contain git repos that could collide or conflict with moving Home_Lab_2026, OpenClaw_Claude, and ClaudeTest there. Steps: (1) List all folders on shared drive, identify any .git directories. (2) Check if any existing repos have the same remote URLs as the three repos being moved — that would be a direct collision. (3) Check if any existing repos are forks or older copies — stale clones that need to be removed or reconciled. (4) Determine final target path structure on shared drive so .env values can be determined before the move. (5) If collisions exist, decide whether to delete stale copies, archive them, or merge. Once drive is clean and target paths are confirmed, t-674952 can proceed."
     }
   ]
 }

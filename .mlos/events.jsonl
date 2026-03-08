@@ -19,3 +19,4 @@
 {"timestamp": "2026-03-08T04:12:59+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-11cc79", "title": "Figure out what to do with stored Claude Chat transcript URLs", "type": "task"}
 {"timestamp": "2026-03-08T13:15:42+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-674952", "title": "Refactor hardcoded paths to use MLOS_ROOT env var for multi-device support", "type": "task"}
 {"timestamp": "2026-03-08T13:44:10+00:00", "action": "task_done", "project": "mlos-dev", "task_id": "t-674952", "title": "Refactor hardcoded paths to use MLOS_ROOT env var for multi-device support"}
+{"timestamp": "2026-03-08T14:00:00+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-6957e3", "title": "Audit shared drive for existing git repos before folder migration", "type": "task"}
