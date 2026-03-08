@@ -26,3 +26,4 @@
 {"timestamp": "2026-03-08T20:35:24+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-6957e3", "changes": "notes updated"}
 {"timestamp": "2026-03-08T20:35:39+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-674952", "changes": "status=done, notes updated"}
 {"timestamp": "2026-03-08T21:59:43+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-fba963", "title": "Build task.sh wrapper — enforce pull-operate-push on every vault interaction", "type": "task"}
+{"timestamp": "2026-03-08T22:04:26+00:00", "action": "task_done", "project": "mlos-dev", "task_id": "t-fba963", "title": "Build task.sh wrapper — enforce pull-operate-push on every vault interaction"}
