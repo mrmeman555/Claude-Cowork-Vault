@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T04:12:59+00:00",
+  "last_updated": "2026-03-08T13:15:42+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -247,6 +247,22 @@
         "registry"
       ],
       "notes": "Two Claude Chat share URLs stored in OpenClaw_Claude/.claude/transcripts/registry.md for session bwgh (2026-03-07). URLs: https://claude.ai/share/ef10710c-f1aa-4035-bc99-f5521c354a13 and https://claude.ai/share/e2be28ae-36c5-47b6-8514-e57cb590b018. Share pages return 403 when fetched programmatically. Questions to resolve: (1) Can Cowork browser agent scrape these while logged in? (2) Should the registry live on the session branch instead of main? (3) What schema should transcript entries follow when t-9271e6 is built — how do URL-based entries migrate to local .jsonl entries? (4) Should INBOX point to registry.md so boot agents know transcripts exist?"
+    },
+    {
+      "id": "t-674952",
+      "title": "Refactor hardcoded paths to use MLOS_ROOT env var for multi-device support",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-08T13:15:42+00:00",
+      "updated": "2026-03-08T13:15:42+00:00",
+      "tags": [
+        "paths",
+        "multi-device",
+        "env",
+        "portability"
+      ],
+      "notes": "All three Desktop paths are hardcoded across multiple files. Full list of affected files: (1) OpenClaw_Claude/CLAUDE.md — all three folder paths + CLI command examples. (2) OpenClaw_Claude/.claude/commands/setup-sync.md — Home_Lab_2026 path. (3) Home_Lab_2026/.mlos/bootstrap.sh — OPENCLAW_DIR hardcoded on line 18. (4) Home_Lab_2026/.mlos/session-close.sh — OPENCLAW_DIR + VAULT_DIR hardcoded. (5) Home_Lab_2026/.mlos/watcher.py — all three project paths in lookup table. (6) Home_Lab_2026/.mlos/ingest.py — ClaudeTest + Home_Lab_2026 paths. Fix: create Home_Lab_2026/.env with MLOS_ROOT, OPENCLAW_DIR, VAULT_DIR, CLAUDETEST_DIR. Each device sets this file once. All scripts source .env instead of hardcoding. CLAUDE.md updated to say paths live in .env. .env added to .gitignore so it stays device-local. DO THIS BEFORE moving folders to shared drive."
     }
   ]
 }
