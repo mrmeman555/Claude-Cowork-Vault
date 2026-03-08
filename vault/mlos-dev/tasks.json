@@ -318,11 +318,11 @@
     {
       "id": "t-d47609",
       "title": "Centralize Claude Code transcripts from all devices to shared drive for unified watcher ingestion",
-      "status": "open",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "created": "2026-03-08T20:46:03+00:00",
-      "updated": "2026-03-08T21:14:54.011505+00:00",
+      "updated": "2026-03-08T21:49:50.020417+00:00",
       "tags": [
         "transcripts",
         "multi-device",
@@ -335,11 +335,11 @@
     {
       "id": "t-efb140",
       "title": "Agent booted with stale vault \u2014 Claude-Cowork-Vault pull not happening at boot",
-      "status": "open",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "created": "2026-03-08T21:15:40+00:00",
-      "updated": "2026-03-08T21:15:40+00:00",
+      "updated": "2026-03-08T21:49:50.020417+00:00",
       "tags": [
         "boot",
         "freshness",
