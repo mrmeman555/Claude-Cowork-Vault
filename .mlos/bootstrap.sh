@@ -11,11 +11,22 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # Normalize MSYS path (/c/Users/...) to Windows format (C:/Users/...) for Python
 REPO_ROOT=$(echo "$REPO_ROOT" | sed 's|^/\([a-zA-Z]\)/|\1:/|')
 SCRIPT_DIR=$(echo "$SCRIPT_DIR" | sed 's|^/\([a-zA-Z]\)/|\1:/|')
+
+# Load device-local paths from .env
+ENV_FILE="$REPO_ROOT/.env"
+if [ -f "$ENV_FILE" ]; then
+  source "$ENV_FILE"
+else
+  echo -e "\033[0;31mError: .env not found at $ENV_FILE\033[0m"
+  echo "Create it with: MLOS_ROOT, OPENCLAW_DIR, VAULT_DIR, CLAUDETEST_DIR"
+  exit 1
+fi
+
 VAULT_DIR="$REPO_ROOT/vault"
 INGEST="$SCRIPT_DIR/ingest.py"
 SERVER="$REPO_ROOT/server.py"
 SERVER_PORT=3001
-OPENCLAW_DIR="C:/Users/Erinh/Desktop/OpenClaw_Claude"
+# OPENCLAW_DIR loaded from .env
 API_BASE="http://localhost:${SERVER_PORT}/api"
 
 # Detect python command — handle Windows Store alias interference

@@ -951,8 +951,8 @@ def cmd_sync(args):
     index_html = ROOT / "index.html"
     browser_exists = server_py.exists() and index_html.exists()
 
-    # ClaudeTest status (check if sibling repo exists)
-    claudetest = ROOT.parent / "ClaudeTest"
+    # ClaudeTest status (check if repo exists)
+    claudetest = Path(claudetest_path) if claudetest_path else ROOT.parent / "ClaudeTest"
     claudetest_exists = claudetest.exists() and (claudetest / "index.html").exists()
 
     # ── Generate project-state.md ─────────────────────────────
@@ -983,10 +983,22 @@ def cmd_sync(args):
     lines.append("- **Template Composition**: Kernel + Schema + Scenario YAML -> full system prompt")
     lines.append("")
 
+    # ── Load device-local paths ─────────────────────────────
+    env_path = MLOS_DIR.parent / ".env"
+    env_vars = {}
+    if env_path.exists():
+        for _line in env_path.read_text().splitlines():
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _k, _v = _line.split("=", 1)
+                env_vars[_k.strip()] = _v.strip()
+    claudetest_path = env_vars.get("CLAUDETEST_DIR", os.environ.get("CLAUDETEST_DIR", ""))
+    home_lab_path = env_vars.get("MLOS_ROOT", os.environ.get("MLOS_ROOT", "")) + "/Home_Lab_2026"
+
     # ── ClaudeTest section ────────────────────────────────────
     lines.append("## What Exists (Two Repos)")
     lines.append("")
-    lines.append("### ClaudeTest/ (C:\\Users\\Erinh\\Desktop\\ClaudeTest)")
+    lines.append(f"### ClaudeTest/ ({claudetest_path})")
     lines.append("")
     if claudetest_exists:
         lines.append("The **prototyping sandbox**. Contains:")
@@ -1001,7 +1013,7 @@ def cmd_sync(args):
     lines.append("")
 
     # ── Home_Lab_2026 section ─────────────────────────────────
-    lines.append("### Home_Lab_2026/ (C:\\Users\\Erinh\\Desktop\\Home_Lab_2026)")
+    lines.append(f"### Home_Lab_2026/ ({home_lab_path})")
     lines.append("")
     lines.append("The **vault system** (Claude-Cowork-Vault). Contains:")
     lines.append("")

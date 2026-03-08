@@ -31,20 +31,34 @@ DB_PATH = MLOS_DIR / "watcher.db"
 
 # ── Project Classification ────────────────────────────────────
 
-PROJECT_ROOTS = {
-    "Home_Lab_2026": [
-        "C:/Users/Erinh/Desktop/Home_Lab_2026",
-        "C:\\Users\\Erinh\\Desktop\\Home_Lab_2026",
-    ],
-    "ClaudeTest": [
-        "C:/Users/Erinh/Desktop/ClaudeTest",
-        "C:\\Users\\Erinh\\Desktop\\ClaudeTest",
-    ],
-    "OpenClaw_Claude": [
-        "C:/Users/Erinh/Desktop/OpenClaw_Claude",
-        "C:\\Users\\Erinh\\Desktop\\OpenClaw_Claude",
-    ],
-}
+def _load_env():
+    """Load .env from repo root for device-local paths."""
+    env_path = ROOT / ".env"
+    env_vars = {}
+    if env_path.exists():
+        for line in env_path.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                key, val = line.split("=", 1)
+                env_vars[key.strip()] = val.strip()
+    return env_vars
+
+def _build_project_roots():
+    """Build PROJECT_ROOTS from .env, with both slash variants for matching."""
+    env = _load_env()
+    home_lab = env.get("MLOS_ROOT", os.environ.get("MLOS_ROOT", "")) + "/Home_Lab_2026"
+    claudetest = env.get("CLAUDETEST_DIR", os.environ.get("CLAUDETEST_DIR", ""))
+    openclaw = env.get("OPENCLAW_DIR", os.environ.get("OPENCLAW_DIR", ""))
+
+    roots = {}
+    for name, path in [("Home_Lab_2026", home_lab), ("ClaudeTest", claudetest), ("OpenClaw_Claude", openclaw)]:
+        if path:
+            fwd = path.replace("\\", "/")
+            bck = path.replace("/", "\\")
+            roots[name] = [fwd, bck]
+    return roots
+
+PROJECT_ROOTS = _build_project_roots()
 
 
 def classify_project(path: str) -> str | None:

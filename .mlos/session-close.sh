@@ -6,7 +6,20 @@
 set -e
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
-OPENCLAW_DIR="C:/Users/Erinh/Desktop/OpenClaw_Claude"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT=$(echo "$REPO_ROOT" | sed 's|^/\([a-zA-Z]\)/|\1:/|')
+
+# Load device-local paths from .env
+ENV_FILE="$REPO_ROOT/.env"
+if [ -f "$ENV_FILE" ]; then
+  source "$ENV_FILE"
+else
+  echo -e "\033[0;31mError: .env not found at $ENV_FILE\033[0m"
+  echo "Create it with: MLOS_ROOT, OPENCLAW_DIR, VAULT_DIR, CLAUDETEST_DIR"
+  exit 1
+fi
+# OPENCLAW_DIR loaded from .env
 
 # Detect python command — handle Windows Store alias interference
 # The Store alias intercepts python3 even for --version, so test with actual import
@@ -98,7 +111,7 @@ if [ -n "$STAGED" ]; then
 fi
 
 # Check for task changes (if tasks.json exists on this branch vs main)
-VAULT_DIR="C:/Users/Erinh/Desktop/Home_Lab_2026/vault"
+# VAULT_DIR loaded from .env
 TASKS_FILE="$VAULT_DIR/$PROJECT/tasks.json"
 if [ -f "$TASKS_FILE" ]; then
   # Compare task counts between branch and main
