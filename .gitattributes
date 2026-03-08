@@ -1,0 +1,3 @@
+.mlos/events.jsonl merge=mlos-events
+vault/**/tasks.json merge=mlos-tasks
+vault/mlos-dev/tasks.json merge=mlos-tasks
