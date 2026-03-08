@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T22:04:26+00:00",
+  "last_updated": "2026-03-08T22:08:50+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -416,6 +416,22 @@
         "ingest"
       ],
       "notes": "Core problem: agents treat GitHub as a backup, not the source of truth. They read stale local state and write without pushing. Fix: a wrapper script that enforces the write-through protocol on every task operation.\n\n## What to build: .mlos/task.sh\n\nREAD usage:\n  bash .mlos/task.sh list [--project mlos-dev]\n  -> git pull origin main\n  -> python3 .mlos/ingest.py task list ...\n  -> outputs result\n\nWRITE usage:\n  bash .mlos/task.sh add --title '...' --priority high ...\n  bash .mlos/task.sh update --id t-xxxx --status done\n  -> git pull origin main\n  -> python3 .mlos/ingest.py task add/update ...\n  -> git add -A && git commit -m 'task: auto-commit from task.sh'\n  -> git push origin main\n\n## Rules\n- task.sh ALWAYS pulls before any operation\n- task.sh ALWAYS pushes after any write\n- Agents NEVER call ingest.py directly for task operations\n- If push fails, retry pull+push once before erroring\n\n## CLAUDE.md update\nReplace all ingest.py task references with task.sh equivalents. Add to protocol: 'Never call ingest.py task commands directly. Always use .mlos/task.sh.'\n\n## Acceptance criteria\n1. task.sh list always returns fresh data (verify with two agents writing simultaneously)\n2. task.sh add creates task AND pushes in one command\n3. task.sh update marks done AND pushes in one command\n4. No manual git add/commit/push needed after any task operation\n5. CLAUDE.md updated to reference task.sh\n\n## On completion\ngit add -A && git commit -m 'feat: task.sh write-through wrapper' && git push\npython3 .mlos/ingest.py task update --id <this-task-id> --status done"
+    },
+    {
+      "id": "t-d8ce51",
+      "title": "Document two valid working modes — session workflow vs direct-to-main",
+      "status": "open",
+      "priority": "medium",
+      "type": "task",
+      "created": "2026-03-08T22:08:50+00:00",
+      "updated": "2026-03-08T22:08:50+00:00",
+      "tags": [
+        "sessions",
+        "workflow",
+        "claude.md",
+        "documentation"
+      ],
+      "notes": "Two valid working modes exist. Both are intentional. CLAUDE.md should surface this so agents don't assume one is broken.\n\n## Mode 1: Session Workflow\nUse when: structured work, clear scope, multiple agents coordinating on a feature, want clean handoff notes.\nTools: bootstrap.sh (create session branch), session-close.sh (merge, write INBOX, clean up).\nBranch pattern: session/YYYY-MM-DD-topic\nHandoff: INBOX.md entry summarizing what happened.\n\n## Mode 2: Direct-to-Main (current default)\nUse when: exploratory work, rapid iteration, operator present, tasks are short-lived.\nTools: task.sh for all task ops, transcript sync handles continuity, merge driver handles conflicts.\nBranch pattern: none — work directly on main.\nHandoff: transcripts on shared drive, tasks in vault.\n\n## What to do\nUpdate CLAUDE.md to document both modes at the top level. Agents should detect which mode is active (check current branch — if session/* then session mode, if main then direct mode) and behave accordingly. Neither mode is wrong."
     }
   ]
 }

@@ -27,3 +27,4 @@
 {"timestamp": "2026-03-08T20:35:39+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-674952", "changes": "status=done, notes updated"}
 {"timestamp": "2026-03-08T21:59:43+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-fba963", "title": "Build task.sh wrapper — enforce pull-operate-push on every vault interaction", "type": "task"}
 {"timestamp": "2026-03-08T22:04:26+00:00", "action": "task_done", "project": "mlos-dev", "task_id": "t-fba963", "title": "Build task.sh wrapper — enforce pull-operate-push on every vault interaction"}
+{"timestamp": "2026-03-08T22:08:50+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-d8ce51", "title": "Document two valid working modes — session workflow vs direct-to-main", "type": "task"}
