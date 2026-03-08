@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T02:52:13.268580+00:00",
+  "last_updated": "2026-03-08T03:50:15+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -16,7 +16,7 @@
         "generated-context",
         "api"
       ],
-      "notes": "decisions.md, session-history.md, pickup.md rot between sessions \u2014 replace with maintainable alternatives. EXTENDED: The vault project view currently stores static agent-written files (project-state.md, decisions.md, session-history.md, pickup.md). These should NOT be stored documents \u2014 they should be generated on-demand from live sources of truth: tasks.json, git log, watcher.db, session branches. Solution: GET /api/project/{name}/context endpoint that assembles a fresh snapshot at query time. Permanent artifacts (case studies, design docs, real work products) stay as files. System state summaries are never stored \u2014 always generated."
+      "notes": "decisions.md, session-history.md, pickup.md rot between sessions — replace with maintainable alternatives. EXTENDED: The vault project view currently stores static agent-written files (project-state.md, decisions.md, session-history.md, pickup.md). These should NOT be stored documents — they should be generated on-demand from live sources of truth: tasks.json, git log, watcher.db, session branches. Solution: GET /api/project/{name}/context endpoint that assembles a fresh snapshot at query time. Permanent artifacts (case studies, design docs, real work products) stay as files. System state summaries are never stored — always generated."
     },
     {
       "id": "t-8bb55a",
@@ -58,7 +58,7 @@
         "mcp",
         "integration"
       ],
-      "notes": "Look into MCP (Model Context Protocol) servers \u2014 could provide structured tool access to vault operations, task tracking, and context loading for any Claude interface."
+      "notes": "Look into MCP (Model Context Protocol) servers — could provide structured tool access to vault operations, task tracking, and context loading for any Claude interface."
     },
     {
       "id": "t-f79cdc",
@@ -72,7 +72,7 @@
         "agents",
         "automation"
       ],
-      "notes": "Investigate Claude Code sub-agents and Agent SDK for automating vault operations \u2014 potential path for Tier 2 watcher agents, context maintenance, and multi-step workflows."
+      "notes": "Investigate Claude Code sub-agents and Agent SDK for automating vault operations — potential path for Tier 2 watcher agents, context maintenance, and multi-step workflows."
     },
     {
       "id": "t-b7e972",
@@ -118,11 +118,11 @@
         "context-packs",
         "tooling"
       ],
-      "notes": "CLI-first, not UI-first. Any agent should be able to compose context packs via commands \u2014 select kernel, schema, scenario, attach vault sources, stamp with provenance, output a deployable seed prompt. The web UI is secondary. Priority: (1) CLI compose toolchain (2) API endpoints for remote agents (3) Optional web composer. The created agent's context pack should reference the transcript/session where it was designed. Ties to t-fa0b53 (provenance) and t-b7e972 (session tracking)."
+      "notes": "CLI-first, not UI-first. Any agent should be able to compose context packs via commands — select kernel, schema, scenario, attach vault sources, stamp with provenance, output a deployable seed prompt. The web UI is secondary. Priority: (1) CLI compose toolchain (2) API endpoints for remote agents (3) Optional web composer. The created agent's context pack should reference the transcript/session where it was designed. Ties to t-fa0b53 (provenance) and t-b7e972 (session tracking)."
     },
     {
       "id": "t-50fea1",
-      "title": "Design context pack generator \u2014 grounding prompt factory for domain-specific agent environments",
+      "title": "Design context pack generator — grounding prompt factory for domain-specific agent environments",
       "status": "open",
       "priority": "high",
       "type": "task",
@@ -151,7 +151,7 @@
       "created": "2026-03-08T02:30:26+00:00",
       "updated": "2026-03-08T02:30:26+00:00",
       "tags": [],
-      "notes": "Add created_from (session branch or chat URL) and agent_id (e.g. 'cloud-agent', 'code-agent', 'operator') to tasks.json schema. Update ingest.py task add with optional --session and --agent flags. Backward compatible \u2014 existing tasks get null for new fields. Closes GAP-002 partially."
+      "notes": "Add created_from (session branch or chat URL) and agent_id (e.g. 'cloud-agent', 'code-agent', 'operator') to tasks.json schema. Update ingest.py task add with optional --session and --agent flags. Backward compatible — existing tasks get null for new fields. Closes GAP-002 partially."
     },
     {
       "id": "t-2da901",
@@ -165,7 +165,7 @@
         "vault-browser",
         "quick-win"
       ],
-      "notes": "Temp workaround until direct API sync is implemented. Button on tasks page that re-fetches /api/tasks and updates the view. No page reload needed \u2014 just re-query and re-render."
+      "notes": "Temp workaround until direct API sync is implemented. Button on tasks page that re-fetches /api/tasks and updates the view. No page reload needed — just re-query and re-render."
     },
     {
       "id": "t-49c238",
@@ -180,7 +180,23 @@
         "sync",
         "cloud-agent"
       ],
-      "notes": "Current path: cloud agent \u2192 GitHub \u2192 git pull \u2192 local file \u2192 browser. 4 hops, manual. Target: expose localhost:3001 via Cloudflare Tunnel or ngrok, cloud agent writes directly to POST /api/tasks, SSE pushes update to browser instantly. Git reverts to its proper role: version control + session branches only, not sync layer."
+      "notes": "Current path: cloud agent → GitHub → git pull → local file → browser. 4 hops, manual. Target: expose localhost:3001 via Cloudflare Tunnel or ngrok, cloud agent writes directly to POST /api/tasks, SSE pushes update to browser instantly. Git reverts to its proper role: version control + session branches only, not sync layer."
+    },
+    {
+      "id": "t-9271e6",
+      "title": "Build browser extension for real-time Claude Chat transcript capture",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-08T03:50:15+00:00",
+      "updated": "2026-03-08T03:50:15+00:00",
+      "tags": [
+        "transcripts",
+        "browser-extension",
+        "context",
+        "sessions"
+      ],
+      "notes": "Real-time DOM observer on claude.ai. MutationObserver watches message container — captures {role, text, timestamp, message_id} on each new message node. Logs deletions as events (append-only event log, not a mirror). Native Messaging Host writes to vault/{project}/.session-transcripts/{chat_id}.jsonl — same .jsonl format as Claude Code transcripts so watcher.py can parse both surfaces. Transcript registered in .session-chats.json with surface: claude-chat. Key design decisions: (1) capture on send/receive only not drafts, (2) deletion = logged event not silent drop, (3) timestamps preserved. Closes the cloud agent context gap — without this, Claude Chat sessions leave no local artifact. Session-association model: transcript lives on the session branch under .session-transcripts/, merged to main when session closes."
     }
   ]
 }

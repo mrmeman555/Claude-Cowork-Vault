@@ -13,3 +13,4 @@
 {"timestamp": "2026-03-06T00:43:46+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-fa0b53", "title": "Add provenance tracking to tasks (transcript + message linkage)", "type": "task"}
 {"timestamp": "2026-03-06T01:00:13+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-2508bc", "title": "Transform ML OS demo into agent-facing context pack builder", "type": "task"}
 {"timestamp": "2026-03-06T01:04:26+00:00", "action": "task_update", "project": "mlos-dev", "task_id": "t-2508bc", "changes": "notes updated"}
+{"timestamp": "2026-03-08T03:50:15+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-9271e6", "title": "Build browser extension for real-time Claude Chat transcript capture", "type": "task"}
