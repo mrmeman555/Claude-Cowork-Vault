@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T20:35:39+00:00",
+  "last_updated": "2026-03-08T20:37:54+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -279,6 +279,24 @@
         "blocker"
       ],
       "notes": "COMPLETED 2026-03-08 by Code agent.\n\n## Audit results\n5 git repos found on Z:. 1 collision: Z:/Projects/Working1/Security+_Analysis pointed to Home_Lab_2026.git remote — deleted per Mimir's instruction (stale clone, 3 commits, no vault infrastructure).\n\n## Migration executed\nAll three repos moved from C:/Users/Erinh/Desktop/ to Z:/Projects/ML_OS/:\n- Home_Lab_2026 (514M) — git intact, ingest.py verified working\n- OpenClaw_Claude (48M) — git intact, on session branch session/mlos-dev/2026-03-07/bwgh\n- ClaudeTest (538K) — no git repo, files intact\n\n## Post-move updates\n- .env updated: MLOS_ROOT=Z:/Projects/ML_OS, all paths now Z: based\n- Desktop originals removed (empty locked shells from Claude worktrees remain — clean up after session close)\n- Vault server needs restart from new location\n- Next Claude Code session must open from Z:/Projects/ML_OS/OpenClaw_Claude"
+    },
+    {
+      "id": "t-cfb705",
+      "title": "Explore Gemini + Google tools integration for large-context and cheap inference use cases",
+      "status": "open",
+      "priority": "medium",
+      "type": "idea",
+      "created": "2026-03-08T20:37:54+00:00",
+      "updated": "2026-03-08T20:37:54+00:00",
+      "tags": [
+        "gemini",
+        "google",
+        "context",
+        "integration",
+        "antigrav",
+        "notebooklm"
+      ],
+      "notes": "Mimir has Google Workspace Pro AI Ultra access (permanent, via beta tester program) and access to Antigrav IDE which has proprietary plugins for Google AI APIs including NotebookLM. Key insight: Gemini's primary advantage is massive context window + needle-in-a-haystack retrieval at low cost. This makes it a natural complement to Claude for specific use cases, not a replacement.\n\n## Identified use cases\n1. Large-context tasks on the cheap — feed entire vault, transcript history, engine files as context. Gemini handles the retrieval, Claude handles the reasoning and output.\n2. NotebookLM as queryable knowledge base — periodically sync vault docs and transcripts into a NotebookLM notebook. Agents query it for historical context instead of loading everything into the window.\n3. Google Drive as shared drive redundancy — Z: going down was a single point of failure. Drive doesn't have that problem.\n4. Antigrav IDE — investigate what Google APIs are scriptable vs GUI-only. If scriptable, map to current system gaps.\n\n## Design principle\nDo NOT redesign the coordination layer (git, vault, INBOX, session branches) for Google tools. Google tools slot INTO that layer as consumers or contributors — source of truth stays in git/vault.\n\n## Questions to answer\n1. What does Antigrav actually expose programmatically? API access or GUI only?\n2. Can NotebookLM be fed programmatically (Drive sync, API) or manual upload only?\n3. Which current open tasks could be partially closed by Google tools? (t-889a68 transcript capture, t-11cc79 transcript storage, t-cbeff8 context rot)\n4. What's the cost model — is Gemini API free under Workspace Ultra or separate billing?"
     }
   ]
 }
