@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T02:43:28.310838+00:00",
+  "last_updated": "2026-03-08T02:52:13.268580+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -152,6 +152,35 @@
       "updated": "2026-03-08T02:30:26+00:00",
       "tags": [],
       "notes": "Add created_from (session branch or chat URL) and agent_id (e.g. 'cloud-agent', 'code-agent', 'operator') to tasks.json schema. Update ingest.py task add with optional --session and --agent flags. Backward compatible \u2014 existing tasks get null for new fields. Closes GAP-002 partially."
+    },
+    {
+      "id": "t-2da901",
+      "title": "Add manual refresh button to vault browser tasks view",
+      "status": "open",
+      "priority": "low",
+      "type": "task",
+      "created": "2026-03-08T02:52:13.268580+00:00",
+      "updated": "2026-03-08T02:52:13.268580+00:00",
+      "tags": [
+        "vault-browser",
+        "quick-win"
+      ],
+      "notes": "Temp workaround until direct API sync is implemented. Button on tasks page that re-fetches /api/tasks and updates the view. No page reload needed \u2014 just re-query and re-render."
+    },
+    {
+      "id": "t-49c238",
+      "title": "Architect direct cloud-agent-to-vault sync via tunnel (Cloudflare/ngrok)",
+      "status": "open",
+      "priority": "medium",
+      "type": "idea",
+      "created": "2026-03-08T02:52:13.268580+00:00",
+      "updated": "2026-03-08T02:52:13.268580+00:00",
+      "tags": [
+        "architecture",
+        "sync",
+        "cloud-agent"
+      ],
+      "notes": "Current path: cloud agent \u2192 GitHub \u2192 git pull \u2192 local file \u2192 browser. 4 hops, manual. Target: expose localhost:3001 via Cloudflare Tunnel or ngrok, cloud agent writes directly to POST /api/tasks, SSE pushes update to browser instantly. Git reverts to its proper role: version control + session branches only, not sync layer."
     }
   ]
 }
