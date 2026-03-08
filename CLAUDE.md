@@ -40,6 +40,19 @@ Paths are NOT stored — derived from `vault/{project}/{filename}`.
 2. Commit after making changes
 3. Push when done
 
+## Task Operations Protocol
+
+**Never call `ingest.py task` commands directly.** Always use `.mlos/task.sh` — it enforces pull-before-read and commit+push-after-write automatically.
+
+```
+bash .mlos/task.sh list [--project mlos-dev] [--status open]
+bash .mlos/task.sh add --project mlos-dev --title "..." [--priority high] [--type task] [--tags a,b] [--notes "..."]
+bash .mlos/task.sh update <id> [--status done] [--notes "..."]
+bash .mlos/task.sh done <id>
+```
+
+Every write operation (add/update/done) pulls, applies the change, commits, and pushes in one atomic step. No manual git commands needed for task changes.
+
 ## Who works here
 - **Cloud agent (claude.ai / Cowork):** Writes docs, plans changes, designs systems
 - **Local agent (Claude Code):** Pulls repo, executes, builds tools, processes files
