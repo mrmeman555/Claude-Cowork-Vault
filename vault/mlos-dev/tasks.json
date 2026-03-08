@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T14:29:44+00:00",
+  "last_updated": "2026-03-08T20:35:39+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -251,34 +251,34 @@
     {
       "id": "t-674952",
       "title": "Refactor hardcoded paths to use MLOS_ROOT env var for multi-device support",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "created": "2026-03-08T13:15:42+00:00",
-      "updated": "2026-03-08T14:29:44+00:00",
+      "updated": "2026-03-08T20:35:39+00:00",
       "tags": [
         "paths",
         "multi-device",
         "env",
         "portability"
       ],
-      "notes": "COMPLETED 2026-03-08 by Code agent.\n\nCreated Home_Lab_2026/.env with MLOS_ROOT, OPENCLAW_DIR, VAULT_DIR, CLAUDETEST_DIR.\nUpdated 6 files to read from .env instead of hardcoded paths:\n- bootstrap.sh, session-close.sh (source .env)\n- watcher.py (dynamic PROJECT_ROOTS from .env)\n- ingest.py (env vars for display paths in cmd_sync)\n- setup-sync.md, sync.md (env var references)\n- CLAUDE.md (linked workspaces table uses $VAR notation)\n\n.env is gitignored. grep \"Erinh\" across all 6 files returns nothing.\nCommits: Home_Lab_2026 e268325, OpenClaw_Claude a8246eb."
+      "notes": "COMPLETED 2026-03-08 by Code agent. Both phases done.\n\n## Phase 1: Path refactor (completed first)\nCreated Home_Lab_2026/.env with MLOS_ROOT, OPENCLAW_DIR, VAULT_DIR, CLAUDETEST_DIR.\nUpdated 6 files to read from .env instead of hardcoded paths:\n- bootstrap.sh, session-close.sh (source .env)\n- watcher.py (dynamic PROJECT_ROOTS from .env)\n- ingest.py (env vars for display paths in cmd_sync)\n- setup-sync.md, sync.md (env var references)\n- CLAUDE.md (linked workspaces table uses $VAR notation)\n.env is gitignored. grep \"Erinh\" across all 6 files returns nothing.\nCommits: Home_Lab_2026 e268325, OpenClaw_Claude a8246eb.\n\n## Phase 2: Physical folder move (completed second)\nAll three repos moved from C:/Users/Erinh/Desktop/ to Z:/Projects/ML_OS/.\n.env updated to Z: paths. Verified: git intact, ingest.py working, file counts match.\nSecurity+_Analysis collision on Z: deleted (stale clone)."
     },
     {
       "id": "t-6957e3",
       "title": "Audit shared drive for existing git repos before folder migration",
-      "status": "in_progress",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "created": "2026-03-08T14:00:00+00:00",
-      "updated": "2026-03-08T14:29:33+00:00",
+      "updated": "2026-03-08T20:35:24+00:00",
       "tags": [
         "shared-drive",
         "git",
         "migration",
         "blocker"
       ],
-      "notes": "BLOCKS t-674952 (folder move to shared drive). Run this task first.\n\n## Context\nMimir wants to move Home_Lab_2026, OpenClaw_Claude, and ClaudeTest from C:/Users/Erinh/Desktop/ to shared drive Z: for multi-device access. The shared drive may already have git repos that could collide. Audit Z: before anything is moved.\n\n## AUDIT RESULTS (2026-03-08, Code agent)\n\n### Git repos found on Z:\n1. Z:/ (root) → workspace-share.git — NO COLLISION\n2. Z:/Projects/Dates/Mobile-Repo → Mobile-Repo.git — NO COLLISION\n3. Z:/Projects/Working0/gemini-context-bridge → GeminiContextBridge.git — NO COLLISION\n4. Z:/Projects/Working0/savante-context-bridge → SavanteContextBridge.git — NO COLLISION\n5. Z:/Projects/Working1/Security+_Analysis → Home_Lab_2026.git — COLLISION (same remote as Desktop Home_Lab_2026)\n\n### Collision disposition\n- Security+_Analysis: Mimir says ignore for now. Leave in place.\n\n### Confirmed target path structure\nZ:/Projects/ML_OS/\n├── Home_Lab_2026/\n├── OpenClaw_Claude/\n└── ClaudeTest/\n\n### Blocking status\n- Audit complete, Mimir confirmed target path\n- Awaiting approval from review agent before proceeding with move\n- t-674952 (.env path refactor) already completed — paths are configurable\n\n## Done state\n- [x] Full list of existing git repos on Z: documented\n- [x] Collision check complete\n- [x] Mimir has confirmed target path structure on Z:\n- [ ] Approval from review agent pending"
+      "notes": "COMPLETED 2026-03-08 by Code agent.\n\n## Audit results\n5 git repos found on Z:. 1 collision: Z:/Projects/Working1/Security+_Analysis pointed to Home_Lab_2026.git remote — deleted per Mimir's instruction (stale clone, 3 commits, no vault infrastructure).\n\n## Migration executed\nAll three repos moved from C:/Users/Erinh/Desktop/ to Z:/Projects/ML_OS/:\n- Home_Lab_2026 (514M) — git intact, ingest.py verified working\n- OpenClaw_Claude (48M) — git intact, on session branch session/mlos-dev/2026-03-07/bwgh\n- ClaudeTest (538K) — no git repo, files intact\n\n## Post-move updates\n- .env updated: MLOS_ROOT=Z:/Projects/ML_OS, all paths now Z: based\n- Desktop originals removed (empty locked shells from Claude worktrees remain — clean up after session close)\n- Vault server needs restart from new location\n- Next Claude Code session must open from Z:/Projects/ML_OS/OpenClaw_Claude"
     }
   ]
 }
