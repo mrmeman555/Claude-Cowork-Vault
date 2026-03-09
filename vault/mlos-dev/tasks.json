@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-09T18:54:31+00:00",
+  "last_updated": "2026-03-09T18:54:44+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -499,6 +499,17 @@
       "updated": "2026-03-09T18:54:31+00:00",
       "tags": [],
       "notes": "PAT appears in plaintext in .git/config on both devices and has been exposed in diagnostic output. Rotate on GitHub, then run: git remote set-url origin https://github.com/mrmeman555/Claude-Cowork-Vault.git on both devices. Let credential manager handle auth."
+    },
+    {
+      "id": "t-009bc3",
+      "title": "Clarify Home_Lab_2026 GitHub repo status",
+      "status": "open",
+      "priority": "medium",
+      "type": "task",
+      "created": "2026-03-09T18:54:44+00:00",
+      "updated": "2026-03-09T18:54:44+00:00",
+      "tags": [],
+      "notes": "github.com/mrmeman555/Home_Lab_2026 returns 200 but neither device points to it. Is it a stale duplicate, archived, or does it contain something important? Resolve and either delete it or document what it is."
     }
   ]
 }
