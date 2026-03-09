@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-09T18:54:49+00:00",
+  "last_updated": "2026-03-09T19:04:43+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -536,11 +536,11 @@
     {
       "id": "t-19c06d",
       "title": "Write plain-language system overview doc for operator",
-      "status": "open",
+      "status": "done",
       "priority": "high",
       "type": "task",
       "created": "2026-03-09T18:54:49+00:00",
-      "updated": "2026-03-09T18:54:49+00:00",
+      "updated": "2026-03-09T19:04:43+00:00",
       "tags": [],
       "notes": "A how-does-this-all-work reference written for Mimir, not for an agent. Covers: what each repo is, what task.sh does, how sync works, what the two-layer principle is, what breaks when. Readable when sick or foggy."
     }

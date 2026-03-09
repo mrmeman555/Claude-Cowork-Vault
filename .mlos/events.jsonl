@@ -43,3 +43,4 @@
 {"timestamp": "2026-03-09T18:54:46+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-c5984e", "title": "Document web interface task creation as known fragility", "type": "idea"}
 {"timestamp": "2026-03-09T18:54:47+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-425f41", "title": "Document wrong-project-context failure mode", "type": "idea"}
 {"timestamp": "2026-03-09T18:54:49+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-19c06d", "title": "Write plain-language system overview doc for operator", "type": "task"}
+{"timestamp": "2026-03-09T19:04:43+00:00", "action": "task_done", "project": "mlos-dev", "task_id": "t-19c06d", "title": "Write plain-language system overview doc for operator"}
