@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-09T15:15:24+00:00",
+  "last_updated": "2026-03-09T15:15:26+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -473,11 +473,11 @@
     {
       "id": "t-8dd083",
       "title": "Message enrichment pipeline — structured extraction from transcript messages into queryable atomic notes",
-      "status": "open",
+      "status": "in_progress",
       "priority": "medium",
       "type": "idea",
       "created": "2026-03-09T06:49:23+00:00",
-      "updated": "2026-03-09T06:49:23+00:00",
+      "updated": "2026-03-09T15:15:26+00:00",
       "tags": [
         "transcripts",
         "enrichment",
