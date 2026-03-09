@@ -41,3 +41,4 @@
 {"timestamp": "2026-03-09T18:54:31+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-0f7313", "title": "Rotate exposed PAT and strip from remote URLs", "type": "task"}
 {"timestamp": "2026-03-09T18:54:44+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-009bc3", "title": "Clarify Home_Lab_2026 GitHub repo status", "type": "task"}
 {"timestamp": "2026-03-09T18:54:46+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-c5984e", "title": "Document web interface task creation as known fragility", "type": "idea"}
+{"timestamp": "2026-03-09T18:54:47+00:00", "action": "task_add", "project": "mlos-dev", "task_id": "t-425f41", "title": "Document wrong-project-context failure mode", "type": "idea"}
