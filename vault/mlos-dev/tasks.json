@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-09T15:15:26+00:00",
+  "last_updated": "2026-03-09T15:15:28+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -201,11 +201,11 @@
     {
       "id": "t-47b4df",
       "title": "Add active file watcher to watcher.py for real-time transcript ingestion",
-      "status": "open",
+      "status": "in_progress",
       "priority": "high",
       "type": "task",
       "created": "2026-03-08T04:00:32+00:00",
-      "updated": "2026-03-09T00:24:47+00:00",
+      "updated": "2026-03-09T15:15:28+00:00",
       "tags": [
         "watcher",
         "transcripts",
