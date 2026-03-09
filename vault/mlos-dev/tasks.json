@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-09T15:08:03+00:00",
+  "last_updated": "2026-03-09T15:15:24+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -436,11 +436,11 @@
     {
       "id": "t-2a58df",
       "title": "Build custom Claude chat interface — unified frontend with vault knowledge backend",
-      "status": "open",
+      "status": "in_progress",
       "priority": "high",
       "type": "idea",
       "created": "2026-03-09T00:33:00+00:00",
-      "updated": "2026-03-09T15:08:03+00:00",
+      "updated": "2026-03-09T15:15:24+00:00",
       "tags": [
         "chat",
         "frontend",
