@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-08T22:08:50+00:00",
+  "last_updated": "2026-03-09T00:24:47+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -205,14 +205,14 @@
       "priority": "high",
       "type": "task",
       "created": "2026-03-08T04:00:32+00:00",
-      "updated": "2026-03-08T04:00:32+00:00",
+      "updated": "2026-03-09T00:24:47+00:00",
       "tags": [
         "watcher",
         "transcripts",
         "real-time",
         "GAP-008"
       ],
-      "notes": "watcher.py is currently parse-on-demand only — requires manual invocation of 'watcher.py parse <file>'. No active watching loop exists. Fix: add a watchdog daemon mode using Python watchdog library (or polling fallback) that monitors ~/.claude/projects/ for new or modified .jsonl files and auto-parses them into watcher.db as they're written. This is GAP-008. Related: t-9271e6 (browser extension for Claude Chat) is the same problem on a different surface — both should write to the same .jsonl format and downstream pipeline."
+      "notes": "watcher.py is currently parse-on-demand only — requires manual invocation of 'watcher.py parse <file>'. No active watching loop exists. Fix: add a watchdog daemon mode using Python watchdog library (or polling fallback) that monitors ~/.claude/projects/ for new or modified .jsonl files and auto-parses them into watcher.db as they're written. This is GAP-008. Related: t-9271e6 (browser extension for Claude Chat) is the same problem on a different surface — both should write to the same .jsonl format and downstream pipeline.\n\n## UPDATE 2026-03-08 — Claude Code native cron scheduling now available\nAnthropic shipped /loop and CronCreate in Claude Code on 2026-03-07. This changes the implementation approach significantly.\n\n## Preferred implementation: native /loop scheduling\nInstead of a custom Python daemon, a Code agent can now self-schedule within a session:\n  /loop 1m python3 .mlos/watcher.py parse-all\n\nThis fires parse-all every minute while the session is open — no separate process, no watchdog library, no daemon management. The agent maintains its own freshness loop natively.\n\n## Also useful for vault freshness (replaces manual task.sh calls)\n  /loop 2m bash .mlos/task.sh list --project mlos-dev --status open\n\nAgent stays current on tasks throughout the session without being told to check.\n\n## Constraint to document\nSession-scoped only — tasks die when Claude Code exits. For persistent watching that survives restarts, the OS-level cron (already built in t-d47609) is still required. The two layers complement each other:\n  - OS cron (1 min): transcript sync to shared drive — survives restarts\n  - /loop in-session: parse-all + task freshness — active while agent is working\n\n## What to build\n1. Document the /loop pattern in CLAUDE.md as the recommended in-session freshness mechanism\n2. Add a .claude/commands/watch.md skill that agents can invoke to start their freshness loop\n3. The Python watchdog daemon approach is now a fallback only — prefer /loop for in-session use\n\n## Acceptance criteria (updated)\n1. Agent can run /loop 1m watcher.py parse-all and new transcripts appear in DB within 1 minute\n2. watch.md skill documented and available\n3. CLAUDE.md updated with /loop freshness pattern\n4. OS-level cron (t-d47609) remains as persistent layer — not replaced"
     },
     {
       "id": "t-265094",
