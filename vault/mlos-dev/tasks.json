@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-09T15:15:30+00:00",
+  "last_updated": "2026-03-09T18:54:31+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -488,6 +488,17 @@
         "knowledge"
       ],
       "notes": "Core idea from brainstorming session 2026-03-08:\n\nEvery ingested message could pass through an enrichment step that extracts structured metadata alongside the raw transcript. Messages become highly accessible atomic notes — decisions, questions, hypotheses, action items, entity references — all queryable without needing to read full conversation prose.\n\n## How it works\n1. watcher.py ingests transcript message as-is (unchanged)\n2. Enrichment step runs on each new message:\n   - Pass message + surrounding context to a small fast model (Haiku)\n   - Structured output: JSON with extracted fields\n   - Store enrichment in separate DB table alongside original message\n3. Query layer can search enrichment metadata, then return original message for full context\n\n## Enrichment fields to extract (initial set)\n- type: decision | question | hypothesis | action_item | observation | reference\n- entities: task IDs, file paths, system names, people mentioned\n- tags: inferred topic tags\n- confidence: how certain the extraction is\n- summary: 1-sentence summary of the message\n- links_to: references to other messages, commits, tasks\n\n## Key properties\n- Original transcript is NEVER modified — enrichment is additive only\n- Retroactive — can run enrichment over entire existing corpus\n- The transcript stays as the source of truth, enrichment is derived\n- Small fast model keeps cost low (Haiku at fraction of Opus cost)\n\n## Why this is powerful\nTransforms conversational prose into a structured knowledge graph without requiring anyone to deliberately take notes. Every message becomes a node. Relationships between messages, tasks, decisions, and code emerge automatically.\n\nCombines with t-88e7bb (inferred project knowledge) and t-2a58df (custom chat interface) to form the full knowledge layer."
+    },
+    {
+      "id": "t-0f7313",
+      "title": "Rotate exposed PAT and strip from remote URLs",
+      "status": "open",
+      "priority": "high",
+      "type": "task",
+      "created": "2026-03-09T18:54:31+00:00",
+      "updated": "2026-03-09T18:54:31+00:00",
+      "tags": [],
+      "notes": "PAT appears in plaintext in .git/config on both devices and has been exposed in diagnostic output. Rotate on GitHub, then run: git remote set-url origin https://github.com/mrmeman555/Claude-Cowork-Vault.git on both devices. Let credential manager handle auth."
     }
   ]
 }
