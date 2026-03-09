@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-09T06:19:56+00:00",
+  "last_updated": "2026-03-09T06:49:23+00:00",
   "tasks": [
     {
       "id": "t-cbeff8",
@@ -469,6 +469,25 @@
         "institutional-memory"
       ],
       "notes": "Core insight from brainstorming session 2026-03-08:\n\nThe transcript corpus is not documentation — it is something more valuable. Documentation is lossy compression written by someone who already understood the thing. Transcripts are the raw record of how the system came to be.\n\n## What this enables\nAny agent (or human) can ask specific questions about any project and the AI can query the transcript corpus + git history to reconstruct:\n- Why a decision was made (not just what was decided)\n- What alternatives were considered and rejected\n- What constraints existed at the time\n- What was tried before and why it failed\n- The intent behind any piece of code or architecture\n\nThis is qualitatively different from any documentation system that has ever existed. Documentation requires someone to decide what is worth writing down. Transcripts capture everything including the things nobody thought were worth capturing — which are often the most important things.\n\n## The compounding effect\nThe longer the system runs, the more valuable it gets. Six months of transcripts gives any new agent more institutional knowledge about ML OS than most engineers have about systems they have worked on for years.\n\nMost knowledge systems decay — documentation goes stale, wikis get abandoned, people leave. This system does the opposite. Every session adds signal. The corpus only gets denser.\n\n## The provenance chain makes it trustworthy\nNot 'here is what someone wrote about how this works.' Instead: here is the commit, here is the conversation that produced it, here is the constraint that shaped it, here is what was tried before. Full trace from current state back to the moment of decision.\n\n## What needs to be built to realize this\n1. Semantic search over transcript corpus (embedding model — see t-2a58df)\n2. Query API that accepts natural language questions and returns relevant transcript segments\n3. Context injection into agent boot sequences — agents start sessions already knowing relevant history\n4. Provenance linking — tasks and commits linked to the transcript messages that created them (t-fa0b53)\n\n## This is unprecedented\nNo existing system does this without very specifically designed and maintained project documentation. This emerges as a side effect of just working with the transcript capture infrastructure already built."
+    },
+    {
+      "id": "t-8dd083",
+      "title": "Message enrichment pipeline — structured extraction from transcript messages into queryable atomic notes",
+      "status": "open",
+      "priority": "medium",
+      "type": "idea",
+      "created": "2026-03-09T06:49:23+00:00",
+      "updated": "2026-03-09T06:49:23+00:00",
+      "tags": [
+        "transcripts",
+        "enrichment",
+        "structured-output",
+        "watcher",
+        "rag",
+        "atomic-notes",
+        "knowledge"
+      ],
+      "notes": "Core idea from brainstorming session 2026-03-08:\n\nEvery ingested message could pass through an enrichment step that extracts structured metadata alongside the raw transcript. Messages become highly accessible atomic notes — decisions, questions, hypotheses, action items, entity references — all queryable without needing to read full conversation prose.\n\n## How it works\n1. watcher.py ingests transcript message as-is (unchanged)\n2. Enrichment step runs on each new message:\n   - Pass message + surrounding context to a small fast model (Haiku)\n   - Structured output: JSON with extracted fields\n   - Store enrichment in separate DB table alongside original message\n3. Query layer can search enrichment metadata, then return original message for full context\n\n## Enrichment fields to extract (initial set)\n- type: decision | question | hypothesis | action_item | observation | reference\n- entities: task IDs, file paths, system names, people mentioned\n- tags: inferred topic tags\n- confidence: how certain the extraction is\n- summary: 1-sentence summary of the message\n- links_to: references to other messages, commits, tasks\n\n## Key properties\n- Original transcript is NEVER modified — enrichment is additive only\n- Retroactive — can run enrichment over entire existing corpus\n- The transcript stays as the source of truth, enrichment is derived\n- Small fast model keeps cost low (Haiku at fraction of Opus cost)\n\n## Why this is powerful\nTransforms conversational prose into a structured knowledge graph without requiring anyone to deliberately take notes. Every message becomes a node. Relationships between messages, tasks, decisions, and code emerge automatically.\n\nCombines with t-88e7bb (inferred project knowledge) and t-2a58df (custom chat interface) to form the full knowledge layer."
     }
   ]
 }
