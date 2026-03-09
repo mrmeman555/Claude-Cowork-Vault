@@ -73,9 +73,17 @@ bash .mlos/task.sh add --project mlos-dev --title "..." --priority high --type t
 bash .mlos/task.sh done <task-id>
 ```
 
-### The fragility to know about
+### The cloud environment is a legitimate runtime
 
-If you create tasks from the **claude.ai web interface** (like this chat), those go through a different path — Claude's sandbox, not your local machine. That means no `task.sh`, no pull-before-write, no merge driver protection. It works until it causes a conflict. This is a known temporary risk while you're still web-dependent.
+The claude.ai web interface isn't just a planning tool — it's a full agent runtime. A cloud Claude session can clone the vault from GitHub, run `task.sh`, and push commits back. This is a feature: it means any Claude session, anywhere, can participate in the system as long as it knows the protocol.
+
+This session is a live example — tasks and docs were created and pushed to the vault entirely from the cloud environment.
+
+### The actual fragility to know about
+
+The risk isn't "web interface = bad." The risk is **switching project contexts** or starting a new chat that has no knowledge of the protocol. That agent doesn't know about `task.sh`, doesn't know to pull first, and might call `ingest.py` directly or push in a way that causes conflicts. The symptom: pushes fail or tasks land in the wrong state.
+
+The fix is context, not location. Any agent — cloud or local — that has loaded the right project and knows the protocol is safe to use.
 
 ---
 
